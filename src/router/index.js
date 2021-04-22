@@ -17,5 +17,13 @@ export default new Router({
             },
             component: () =>import('../views/login.vue'),
         },
+        {
+            path: '/index',
+            name: 'index',
+            meta: {
+                title: '接单系统'
+            },
+            component: () =>import('../views/index.vue'),
+        },
     ]
 })

@@ -6,8 +6,11 @@ import router from './router'
 import ElementUI from 'element-ui'
 import store from './store/store'
 import { yhcReq,baseUrl } from './utils/http'
+// 样式
+import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css'
 import './assets/css/common.css'
+import './assets/css/commonStyle.less'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
