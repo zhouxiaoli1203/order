@@ -6,6 +6,13 @@ import router from './router'
 import ElementUI from 'element-ui'
 import store from './store/store'
 import { yhcReq,baseUrl } from './utils/http'
+import constant from './utils/constant'
+import './utils/directive' //阻止按钮同一时间内多次触发
+//全局公用函数
+import Fns from './utils/common'
+Object.keys(Fns).forEach(key => {
+    Vue.prototype[key] = Fns[key]
+})
 // 样式
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/css/base.css'
@@ -17,6 +24,7 @@ Vue.use(ElementUI);
 
 Vue.prototype.$post = yhcReq;
 Vue.prototype.baseUrl = baseUrl;
+Vue.prototype.cost = constant;
 /* eslint-disable no-new */
 new Vue({
     router,

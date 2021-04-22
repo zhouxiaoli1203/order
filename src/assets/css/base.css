@@ -99,3 +99,6 @@ html,body{ -moz-user-select: -moz-none; -moz-user-select: none; -o-user-select:n
  
 /* 清除bootstrap中a的下划线 */
 a:link{ text-decoration: none;  color: #666; }
+span,i{
+    display: inline-block;
+}

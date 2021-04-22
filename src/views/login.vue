@@ -8,7 +8,7 @@
                 <el-input v-model="form.account" placeholder="账号" ></el-input>
               </el-form-item>
               <el-form-item class="yhc-item">
-                <el-input v-model="form.pwd" placeholder="密码" show-password maxlength="6"></el-input>
+                <el-input v-model="form.pwd" placeholder="密码" show-password ></el-input>
               </el-form-item>
               <el-button  type="primary" class="width100" @click="submit">登录</el-button>
           </el-form>
@@ -28,18 +28,33 @@ export default {
     }
   },
   components: {},
-  created(){},
+  created(){
+      localStorage.removeItem("yhc_token");
+  },
   mounted(){},
   methods: {
       submit(){
           if(!this.form.account || !this.form.pwd){
               return this.$message.error("请输入正确账号和密码");
           }
-          this.$router.push({  //核心语句
-            path:'/index',   //跳转的路径
-            query:{           //路由传参时push和query搭配使用 ，作用时传递参数
-            }
-        })
+          let data={
+               "password": this.form.pwd,
+                "username": this.form.account,
+          }
+          this.$post("post",this.baseUrl+"/login",data).then((res)=>{
+              if(res.code == 200){
+                  localStorage.setItem("yhc_token", res.token);
+                  console.log(localStorage);
+
+                     this.$router.push({  //核心语句
+                        path:'/index/prod',   //跳转的路径
+                        query:{           //路由传参时push和query搭配使用 ，作用时传递参数
+                            token:res.token
+                        }
+                    })
+              }
+          });
+       
       }
   }
 }

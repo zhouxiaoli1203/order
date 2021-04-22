@@ -4,3 +4,33 @@
 .width100{
     width: 100%;
 }
+.cursor_p{
+    cursor: pointer;
+}
+.displayFl{
+    display: flex;
+    
+}
+.main{
+    padding-top: 82px;
+}
+.btn{
+    height: 34px;
+    line-height: 20px;
+    border-radius: 4px;
+    padding: 6px 11px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+.bgWhite{
+    background: #FFFFFF;
+    border: 1px solid #3551DF;
+}
+.t_a_c{
+    text-align: center;
+}

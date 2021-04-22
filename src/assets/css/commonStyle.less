@@ -5,8 +5,56 @@
     .el-input{
         line-height: 32px;
     }
+    .el-input__icon{
+        line-height: 34px;
+    }
     .el-input__inner{
         height: 32px;
         line-height: 32px;
     }
+}
+// 弹框公用样式
+.publicPorp{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 8px;
+    z-index: 113;
+}
+.mask{
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 112;
+  }
+  .mask .mask-content{
+      margin: 0 auto;
+      position:absolute;
+      left:50%;
+      top:50%;
+  }
+  .search-head{
+      .drops{
+        padding: 5px 10px;
+        background: #FFFFFF;
+        border-radius: 4px;
+      }
+      .right-btns{
+          justify-content:flex-end ;
+          align-items: center;
+      }
+      .search-input{
+          width: 327px;
+      }
+  }
+  .yhc-table{
+      border-top: 1px solid #E5E8F8;
+  }
+  .yhc-pagination{
+      margin-top: 40px;
+    text-align: center;
 }
