@@ -1,6 +1,9 @@
 .mb40{
     margin-bottom: 40px;
 }
+.mr34{
+    margin-right: 34px;
+}
 .width100{
     width: 100%;
 }
@@ -33,4 +36,23 @@
 }
 .t_a_c{
     text-align: center;
+}
+.gray-font{
+    color:#999;
+}
+.clearfix{
+    clear: both;
+    overflow: hidden;
+}
+.btn-orange{
+    width: 108px;
+    height: 40px;
+    background: #FF8E1D;
+    border-radius: 4px;
+}
+.btn-blue{
+    width: 108px;
+    height: 40px;
+    background: #3551DF;
+    border-radius: 4px;
 }

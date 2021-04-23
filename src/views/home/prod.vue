@@ -2,7 +2,8 @@
   <div class='prod-page'>
     <div class="search-head">
       <div class="fl drops">
-        <el-dropdown>
+
+        <el-dropdown class="yhc-dropdown" trigger="click">
           <span class="el-dropdown-link">
             订单状态<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -11,7 +12,8 @@
             <el-dropdown-item >已下单</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-dropdown>
+
+        <el-dropdown class="yhc-dropdown" trigger="click">
           <span class="el-dropdown-link">
             订单状态<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -19,7 +21,8 @@
             <el-dropdown-item v-for="x in cost.orderType" :key="x.value">{{x.name}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        <el-dropdown>
+
+        <el-dropdown class="yhc-dropdown" trigger="click">
           <span class="el-dropdown-link">
             订单状态<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
@@ -27,6 +30,16 @@
             <el-dropdown-item v-for="x in cost.orderStatus" :key="x.value">{{x.name}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+        <div class="yhc-item yhc-date" style="width:226px">
+
+            <el-date-picker
+        v-model="value1"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期">
+        </el-date-picker>
+        </div>
       </div>
       <div class="fr displayFl right-btns">
         <div class="search-input yhc-item">
@@ -35,12 +48,12 @@
             <el-button slot="append">搜索</el-button>
           </el-input>
         </div>
-        <div class="btn bgWhite export">导出</div>
+        <div class="btn bgWhite export" @click="openExport">导出</div>
       </div>
     </div>
     <div class="table-content">
       <ul class="list-items">
-        <li class="list-card" v-for="x in 12" @click="renling">
+        <li class="list-card" v-for="x in 12" @click="goDetail">
           <div class="head">
             <h3>zheshiyitiao...</h3>
             <span class="yixiadan">已下单</span>
@@ -61,6 +74,37 @@
                      :total="1000">
       </el-pagination>
     </div>
+    <el-dialog class="yhc-dialog"
+    title="驳回理由"
+    :visible.sync="dialogVisible"
+    width="432px">
+    <div class="yhc-item">
+        <el-input type="textarea" v-model="form.desc"></el-input>
+    </div>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+    </el-dialog>
+    <el-dialog class="yhc-dialog"
+    title="导出"
+    :visible.sync="exportVisible"
+    width="432px">
+    <div class="yhc-item yhc-date">
+
+            <el-date-picker
+        v-model="exportDate"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期">
+        </el-date-picker>
+        </div>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="exportVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exportVisible = false">确 定</el-button>
+    </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -68,7 +112,13 @@
 export default {
   name: '',
   data() {
-    return {}
+    return {
+        dialogVisible:false,
+        exportVisible:false,
+        value1:"",
+        exportDate:"",
+        form:{desc:""},
+    }
   },
   components: {},
   created() {
@@ -88,6 +138,25 @@ export default {
         this_.confirm_pop("确定认领该条订单","认领").then(()=>{
 
         });
+    },
+    openBohui(){
+        let this_ = this;
+        this_.dialogVisible = true;
+        this_.form.desc = "";
+    },
+    openExport(){
+        let this_ = this;
+        this_.exportVisible = true;
+        this_.exportDate = "";
+    },
+    goDetail(){
+         this.$router.push({
+        //核心语句
+        path: '/index/detail', //跳转的路径
+        query: {
+          //路由传参时push和query搭配使用 ，作用时传递参数
+        },
+      })
     }
   },
 }
@@ -102,6 +171,7 @@ export default {
   /deep/.el-input-group__append {
     color: #fff;
     background: #3551df;
+    border: 1px;
   }
   .export {
     height: 30px;
