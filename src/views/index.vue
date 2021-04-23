@@ -14,14 +14,31 @@
     <div class="head-nav">
       <div class="headLeft">
         <span class="down cursor_p">条幅设计器下载</span>
-        <div class="img cursor_p">
+        <div class="img cursor_p"
+             v-clickoutside="handleClose">
           <img :src="headOrder"
-               alt="">
+               alt=""
+               @click="checkpop = !checkpop">
+          <div class="logs-pop"
+               v-show="checkpop">
+            <div class="head"><span>操作日志</span><span>X</span></div>
+            <div class="log-div">
+              <ul>
+                <li v-for="x in 10">
+                  <p class="log-date">2021-12-30</p>
+                  <p class="log-info">的，积分哈萨克东方红 </p>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-        <div class="img cursor_p">
+
+        <div class="img cursor_p"
+             @click="msgVisible = true">
           <img :src="headNoctice"
                alt="">
-          <span>40</span>
+          <span class="mark">40</span>
+
         </div>
         <div class="info">
           <p @click="passwordPorp = true">奋斗的阿花 &nbsp/</p>
@@ -37,15 +54,20 @@
     <section class="publicPorp passwordPorp"
              v-show="passwordPorp">
       <h2 v-show="unEdit">修改密码</h2>
-      <div class="eidt-complete t_a_c" v-show="!unEdit">
-          <img src="@/assets/img/duigou.png" alt="" width="44px" height="44px">
-          <div style="margin-top:16px;">修改完成</div>
+      <div class="eidt-complete t_a_c"
+           v-show="!unEdit">
+        <img src="@/assets/img/duigou.png"
+             alt=""
+             width="44px"
+             height="44px">
+        <div style="margin-top:16px;">修改完成</div>
       </div>
       <el-form :model="ruleForm"
                :rules="rules"
                ref="ruleForm"
                class="demo-ruleForm"
-               :hide-required-asterisk="true" v-show="unEdit">
+               :hide-required-asterisk="true"
+               v-show="unEdit">
         <el-form-item label="原密码"
                       prop="oldPassword"
                       class="yhc-item">
@@ -69,6 +91,20 @@
     <div class="mask"
          @click="LognClose"
          v-show="passwordPorp"></div>
+
+    <el-dialog class="yhc-dialog"
+               title="系统消息"
+               :visible.sync="msgVisible"
+               width="936px">
+      <div class="yhc-item">
+        <ul class="mes-ul">
+          <li v-for="x in 10">
+            <p class="date">2021-12-13</p>
+            <p class="info">您有一有退单信息，请立即查看</p>
+          </li>
+        </ul>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -77,7 +113,7 @@ export default {
   name: '',
   data() {
     return {
-      currentInd: 1,
+      currentInd: "/prod",
       headOrder: require('../assets/img/headOrder.png'),
       headNoctice: require('../assets/img/headNoctice.png'),
       ruleForm: {
@@ -93,33 +129,38 @@ export default {
         ],
       },
       passwordPorp: false,
-      unEdit:true,
+      msgVisible: false,
+      checkpop: false,
+      unEdit: true,
       menus: [
-        { name: '生产大厅', id: '1', value: 'ting', path: '/index/prod' },
-        { name: '订单管理', id: '2', value: 'order', path: '/index/order' },
+        { name: '生产大厅', id: '/prod', value: 'ting', path: '/index/prod' },
+        { name: '订单管理', id: '/order', value: 'order', path: '/index/order' },
       ],
     }
   },
   components: {},
   created() {
-    let token = this.$route.query.token
-    localStorage.setItem('yhc_token', token)
+      this.getPath ();
+    // let token = this.$store.state.token
+    // localStorage.setItem('token', token)
   },
   mounted() {},
   methods: {
     changeMenu(x) {
-      this.currentInd = x.id
+      this.currentInd = x.id;
+      this.$store.state.currentIndex = x.id;
       this.$router.push({
         //核心语句
         path: x.path, //跳转的路径
         query: {
           //路由传参时push和query搭配使用 ，作用时传递参数
         },
-      })
+      }).catch(err => {
+  // 重复点击相同的url
+})
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
-        debugger
         if (valid) {
           let data = {
             newPassword: this.ruleForm.newPassword,
@@ -131,7 +172,7 @@ export default {
             data
           ).then((res) => {
             if (res.code == 200) {
-              this.unEdit = false;
+              this.unEdit = false
             }
           })
         } else {
@@ -157,7 +198,19 @@ export default {
         },
       })
     },
+    handleClose() {
+      this.checkpop = false
+    },
+    getPath () {  //解决浏览器后退导航高亮问题
+      let href = this.$route.path
+      let hrefUrl =  href.split('/')[2]
+      this.currentInd = '/'+ hrefUrl
+      this.$store.state.currentIndex = '/'+ hrefUrl
+    },
   },
+  watch: {
+    '$route': 'getPath'  //监听浏览器后退导航高亮问题
+  }
 }
 </script>
 <style lang='less' scoped>
@@ -268,12 +321,12 @@ export default {
         position: relative;
         margin-left: 24px;
 
-        img {
+        > img {
           width: 100%;
           height: 100%;
         }
 
-        span {
+        span.mark {
           position: absolute;
           width: 23px;
           height: 23px;
@@ -318,9 +371,9 @@ export default {
     min-width: 242px;
     max-width: 460px;
     max-height: 420px;
-.demo-ruleForm{
-    width: 394px;
-}
+    .demo-ruleForm {
+      width: 394px;
+    }
     h2 {
       font-size: 24px;
       color: #333;
@@ -328,6 +381,70 @@ export default {
     }
     .editBtn {
       margin-top: 52px;
+    }
+  }
+}
+.mes-ul {
+  display: flex;
+  flex-direction: column;
+  > li {
+    &:hover {
+      background-color: #f9f7f7;
+    }
+    text-align: left;
+    cursor: pointer;
+    padding: 10px 0 10px 10px;
+    border-top: 1px solid #999;
+    &:first-child {
+      border-top: 0;
+    }
+    p.date {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    p.info {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+  }
+}
+.logs-pop {
+  width: 318px;
+  // height: 410px;
+  background: #fff;
+  padding: 20px 12px;
+  position: absolute;
+  top: 32px;
+  right: -150px;
+  box-shadow: 0 0 40px 0 #ddd;
+  .head {
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    .close{
+        width: 25px;
+    text-align: center;
+    cursor: pointer;
+    }
+  }
+  .log-div {
+    height: 370px;
+    overflow: hidden;
+    > ul {
+      width: 296px;
+      height: 370px;
+      overflow: auto;
+    }
+    ul > li {
+      padding: 10px 5px;
+      &:hover {
+        background: #f9f7f7;
+      }
+      .log-date{
+          color:#999;
+      }
     }
   }
 }

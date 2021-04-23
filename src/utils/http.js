@@ -53,11 +53,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
 axios.interceptors.request.use(
     config => {
         // config.headers.token = localStorage.getItem('token');
-        if(localStorage.getItem('yhc_token')){
-            config.headers.Authorization = "Bearer"+" "+localStorage.getItem('yhc_token');
-        }
         // config.yhc_f_a = config[config.method == 'post' ? 'data' : 'params'].yhc_f_a;
         // delete config[config.method == 'post' ? 'data' : 'params'].yhc_f_a;
+        if(localStorage.getItem('token')){
+            config.headers.Authorization = "Bearer"+" "+localStorage.getItem('token');
+        }
         if (config.method == 'post') {
             config.data =JSON.stringify(config.data);
         }
@@ -76,9 +76,10 @@ axios.interceptors.response.use(
         } else {
             yhcmessage(response.data.msg);
             //token失效的状态码
-            if (response.data.code == '403') {
+            if (response.data.code == '401') {
                 if (!token_invalid) {
-                    localStorage.removeItem('yhc_token');
+                    localStorage.removeItem('token');
+                //    window.location.href="/login"
                 }
                 token_invalid = true;
             }
@@ -112,7 +113,7 @@ axios.interceptors.response.use(
 /**
  * 请求
  */
-export function yhcReq(methods, url, params,needJson) {/*  */
+export function yhcReq(methods, url, params,yhc_f_a) {/*  */
     /*
     yhc_f_a分为两种：
     1.特殊状态码 类型为string 例如'205,206';

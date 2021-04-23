@@ -1,6 +1,6 @@
 <template>
   <div class='detail-page'>
-      <div class="page-title"><span class="gray-font">生产大厅 / </span>第一个标题</div>
+      <div class="page-title"><span class="gray-font">{{fromParam.from=="order"?"订单管理":"生产大厅"}} / </span>第一个标题</div>
       <div class="detail-form order-info">
           <div class="form-head">订单信息</div>
           <div class="form-content">
@@ -11,7 +11,7 @@
                  </div>
                  <div class="form-item mr34">
                     <label for="form-label">订单状态</label>
-                    <span class="form-span">已下单</span>
+                    <span class="form-span">已下单<i class="icon_warning fr"></i></span>
                  </div>
                  <div class="form-item">
                     <label for="form-label">订单来源</label>
@@ -110,10 +110,15 @@
 export default {
   name: '',
   data(){
-    return {}
+    return {
+        fromParam:{}
+    }
   },
   components: {},
-  created(){},
+  created(){
+      let this_ = this;
+      this_.fromParam = this_.$route.query;
+  },
   mounted(){},
   methods: {}
 }
@@ -124,6 +129,6 @@ export default {
 }
 .page-title{
     font-size: 14px;
-    margin: 24px 0;
+    margin: 0 0 24px 0;
 }
 </style>

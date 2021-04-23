@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'loginPage',
   data(){
@@ -29,7 +30,7 @@ export default {
   },
   components: {},
   created(){
-      localStorage.removeItem("yhc_token");
+      localStorage.removeItem("token");
   },
   mounted(){},
   methods: {
@@ -41,19 +42,20 @@ export default {
                "password": this.form.pwd,
                 "username": this.form.account,
           }
-          this.$post("post",this.baseUrl+"/login",data).then((res)=>{
-              if(res.code == 200){
-                  localStorage.setItem("yhc_token", res.token);
-                  console.log(localStorage);
-
+          axios.post(this.baseUrl+"/login",data).then((res)=>{
+             if(res.data.code == 200){
+                  localStorage.setItem("token", res.data.token);
+                // this.$store.state.token = res.data.token;
                      this.$router.push({  //核心语句
                         path:'/index/prod',   //跳转的路径
-                        query:{           //路由传参时push和query搭配使用 ，作用时传递参数
-                            token:res.token
-                        }
+                        query:{}
                     })
+                    
               }
           });
+        //   this.$post("post",this.baseUrl+"/login",data,"uneedAuthor").then((res)=>{
+              
+        //   });
        
       }
   }

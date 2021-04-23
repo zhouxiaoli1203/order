@@ -33,7 +33,12 @@ const routes = [
                 component: () =>import('../views/home/order.vue'),
             },
             {
-                path: 'detail',
+                path: 'prod/detail',
+                name: 'detail',
+                component: () =>import('../views/home/detail.vue'),
+            },
+            {
+                path: 'order/detail',
                 name: 'detail',
                 component: () =>import('../views/home/detail.vue'),
             },
@@ -41,10 +46,11 @@ const routes = [
     },
 ];
 const router = new Router({routes});
-router.beforeEach((to, from, next) => {
-    if (to.query.token) {
-        localStorage.setItem("token", to.query.token);
-    }
-    next();
-});
+// router.beforeEach((to, from, next) => {
+//     console.log(to.query,"token");
+//     if (to.query.token) {
+//         localStorage.setItem("token", to.query.token);
+//     }
+//     next();
+// });
 export default router

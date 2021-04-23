@@ -53,14 +53,14 @@
     </div>
     <div class="table-content">
       <ul class="list-items">
-        <li class="list-card" v-for="x in 12" @click="goDetail">
+        <li class="list-card" v-for="x in orderList" @click="goDetail">
           <div class="head">
             <h3>zheshiyitiao...</h3>
-            <span class="yixiadan">已下单</span>
+            <span class="yixiadan">{{x.status==1?"已下单":x.status==4?"已驳回":""}}</span>
           </div>
           <div class="content">
-            <p>创建：2021-01-21 13:22</p>
-            <p>发货：2021-01-21 13:22</p>
+            <p>创建：{{x.createTime}}</p>
+            <p>发货：{{x.deliveryTime}}</p>
           </div>
           <div class="footer">
             <span class="fl status blue">打印资料</span>
@@ -86,6 +86,7 @@
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
     </span>
     </el-dialog>
+
     <el-dialog class="yhc-dialog"
     title="导出"
     :visible.sync="exportVisible"
@@ -101,8 +102,8 @@
         </el-date-picker>
         </div>
     <span slot="footer" class="dialog-footer">
-        <el-button @click="exportVisible = false">取 消</el-button>
-        <el-button type="primary" @click="exportVisible = false">确 定</el-button>
+        <!-- <el-button @click="exportVisible = false">取 消</el-button> -->
+        <el-button type="primary" class="btn-blue" @click="exportVisible = false">确 定</el-button>
     </span>
     </el-dialog>
   </div>
@@ -113,6 +114,7 @@ export default {
   name: '',
   data() {
     return {
+        orderList:[],
         dialogVisible:false,
         exportVisible:false,
         value1:"",
@@ -152,8 +154,10 @@ export default {
     goDetail(){
          this.$router.push({
         //核心语句
-        path: '/index/detail', //跳转的路径
+        path: '/index/prod/detail', //跳转的路径
         query: {
+            from:"prod",
+            id:""
           //路由传参时push和query搭配使用 ，作用时传递参数
         },
       })
@@ -194,7 +198,7 @@ export default {
     background: #ffffff;
     border-radius: 10px;
     padding: 16px 12px;
-    box-shadow: 2px 3px 20px #ccc;
+    box-shadow: 0 0 40px 0 #ddd;
     margin:0 16px 20px 0;
     cursor: pointer;
     .head {

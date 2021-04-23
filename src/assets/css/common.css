@@ -14,9 +14,6 @@
     display: flex;
     
 }
-.main{
-    padding-top: 82px;
-}
 .btn{
     height: 34px;
     line-height: 20px;
@@ -55,4 +52,10 @@
     height: 40px;
     background: #3551DF;
     border-radius: 4px;
+}
+.icon_warning{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url("../img/warning.png") no-repeat center center;
 }
