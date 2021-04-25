@@ -15,7 +15,7 @@ const constant = {
         {name:"已发货",value:"4"},
         {name:"退单中",value:"5"},
         {name:"已退单",value:"6"},
-        {name:"返厂",value:"7"},
+        {name:"返厂中",value:"7"},
         {name:"返厂完成",value:"8"},
         {name:"返厂发货",value:"9"},
         {name:"已返厂",value:"10"},

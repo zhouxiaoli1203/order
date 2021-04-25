@@ -1,6 +1,14 @@
 .yhc-item{
-    .el-form-item__content{
+    display: flex;
+    align-items: center;
+    .el-form-item__label{
+        min-width: 68px;
+    }
+    .el-form-item__label,.el-form-item__content{
         line-height: 32px;
+    }
+    .el-form-item__content{
+        width: 100%;
     }
     .el-input{
         line-height: 32px;
@@ -23,7 +31,7 @@
 .yhc-dialog{
     .el-dialog__header {
         padding: 15px 24px 15px;
-        background-color: rgba(53, 81, 223, 0.1);
+        // background-color: rgba(53, 81, 223, 0.1);
     }
     .el-dialog__title{
         font-size: 16px;
@@ -104,6 +112,7 @@
       padding:24px;
     background: #FFFFFF;
     border-radius: 10px;
+    margin-bottom: 24px;
     .form-head{
         height: 40px;
         line-height: 40px;
@@ -168,9 +177,9 @@
     >div.btn{
         color:#fff;
         line-height: 28px;
-        &:first-child{
+        // &:first-child{
             margin-right: 55px;
-        }
+        // }
     }
   }
   .yhc-table{

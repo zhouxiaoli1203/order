@@ -41,17 +41,24 @@
     clear: both;
     overflow: hidden;
 }
-.btn-orange{
+.btn-operate{
+    cursor: pointer;
     width: 108px;
     height: 40px;
+    border-radius: 4px;
+}
+.btn-orange{
     background: #FF8E1D;
     border-radius: 4px;
 }
 .btn-blue{
-    width: 108px;
-    height: 40px;
     background: #3551DF;
-    border-radius: 4px;
+}
+.btn-red{
+    background: #FF3333;
+}
+.btn-green{
+    background: #4E9F5B;
 }
 .icon_warning{
     display: inline-block;

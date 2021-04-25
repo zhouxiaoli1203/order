@@ -1,4 +1,7 @@
 const Fns={
+    getExpressCompany(){
+       return this.$post("get",this.baseUrl+"/order/listExpressCompany")
+    },
     confirm_pop(cnt,title){
         return new Promise((resolve, reject) => {
             this.$confirm(cnt, title?title:"提示", {

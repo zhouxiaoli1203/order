@@ -41,7 +41,7 @@
 
         </div>
         <div class="info">
-          <p @click="passwordPorp = true">奋斗的阿花 &nbsp/</p>
+          <p @click="passwordPorp = true">{{nickName}} &nbsp/</p>
           <span class="cursor_p"
                 @click="signOut">&nbsp退出</span>
         </div>
@@ -113,6 +113,7 @@ export default {
   name: '',
   data() {
     return {
+        nickName:"",
       currentInd: "/prod",
       headOrder: require('../assets/img/headOrder.png'),
       headNoctice: require('../assets/img/headNoctice.png'),
@@ -141,11 +142,22 @@ export default {
   components: {},
   created() {
       this.getPath ();
+      this.getAccount();
     // let token = this.$store.state.token
     // localStorage.setItem('token', token)
   },
   mounted() {},
   methods: {
+      getAccount(){
+        this.$post(
+            'get',
+            this.baseUrl + '/getInfo',
+          ).then((res) => {
+            if (res.code == 200) {
+              this.nickName = res.user.nickName;
+            }
+          })
+      },
     changeMenu(x) {
       this.currentInd = x.id;
       this.$store.state.currentIndex = x.id;
@@ -360,7 +372,7 @@ export default {
   }
   .right-content {
     width: calc(100% - 200px);
-    height: 100%;
+    // height: 100%;
     margin-left: 200px;
     margin-top: 64px;
     padding: 18px 24px 24px 24px;
