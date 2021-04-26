@@ -130,6 +130,7 @@
            margin-bottom: 20px;
            .form-item{
                float: left;
+               display: flex;
            }
            label{
                display: inline-block;
@@ -147,6 +148,9 @@
                 background: #F2F3F8;
                padding: 6px 10px 6px 16px;
                margin-left: 16px;
+               overflow: hidden;
+               text-overflow: ellipsis;
+               white-space: nowrap;
            }
            .form-textarea{
                 width: calc(100% - 95px);

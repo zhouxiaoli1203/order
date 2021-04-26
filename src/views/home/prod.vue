@@ -53,17 +53,17 @@
     </div>
     <div class="table-content">
       <ul class="list-items">
-        <li class="list-card" v-for="x in orderList" @click="goDetail">
+        <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
           <div class="head">
-            <h3>zheshiyitiao...</h3>
-            <span class="yixiadan">{{x.status==1?"已下单":x.status==4?"已驳回":""}}</span>
+            <h3>{{x.orderAttr.title}}</h3>
+            <span class="yixiadan">{{x.status==1?"已驳回":x.status==0?"待生产":""}}</span>
           </div>
           <div class="content">
             <p>创建：{{x.createTime}}</p>
             <p>发货：{{x.deliveryTime}}</p>
           </div>
           <div class="footer">
-            <span class="fl status blue">打印资料</span>
+            <span class="fl status" :class='{"blue":x.orderAttr.goodsName=="打印","red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
             <span class="fr icon"><img src="@/assets/img/jiantou.png" alt=""></span>
           </div>
         </li>
@@ -131,7 +131,7 @@ export default {
     getList() {
       this.$post('post', this.baseUrl + '/operating/listOrders').then((res) => {
         if (res.code == 200) {
-          this.orderList = res.data
+          this.orderList = res.data;
         }
       })
     },
@@ -151,13 +151,13 @@ export default {
         this_.exportVisible = true;
         this_.exportDate = "";
     },
-    goDetail(){
+    goDetail(x){
          this.$router.push({
         //核心语句
         path: '/index/prod/detail', //跳转的路径
         query: {
             from:"prod",
-            id:""
+            id:x.id
           //路由传参时push和query搭配使用 ，作用时传递参数
         },
       })

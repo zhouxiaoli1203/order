@@ -52,17 +52,17 @@
     </div>
     <div class="table-content">
       <ul class="list-items">
-        <li class="list-card" v-for="x in 12" @click="goDetail">
+        <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
           <div class="head">
-            <h3>zheshiyitiao...</h3>
-            <span class="yixiadan">已下单</span>
+            <h3>{{x.orderAttr.title}}</h3>
+            <span class="yixiadan">{{x.status | yhc_status}}</span>
           </div>
           <div class="content">
-            <p>创建：2021-01-21 13:22</p>
-            <p>发货：2021-01-21 13:22</p>
+            <p>创建：{{x.createTime}}</p>
+            <p>发货：{{x.deliveryTime}}</p>
           </div>
           <div class="footer">
-            <span class="fl status blue">打印资料</span>
+            <span class="fl status" :class='{"blue":x.orderAttr.goodsName=="打印","red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
             <span class="fr icon"><img src="@/assets/img/jiantou.png" alt=""></span>
           </div>
         </li>
@@ -112,6 +112,7 @@ export default {
   name: '',
   data() {
     return {
+        orderList:[],
         dialogVisible:false,
         exportVisible:false,
         value1:"",
@@ -125,10 +126,10 @@ export default {
   },
   mounted() {},
   methods: {
-    getList() {
-      this.$post('post', this.baseUrl + '/operating/listOrders').then((res) => {
+      getList() {
+      this.$post('post', this.baseUrl + '/order/list').then((res) => {
         if (res.code == 200) {
-          this.orderList = res.data
+          this.orderList = res.data;
         }
       })
     },
@@ -148,13 +149,13 @@ export default {
         this_.exportVisible = true;
         this_.exportDate = "";
     },
-    goDetail(){
+    goDetail(x){
          this.$router.push({
         //核心语句
         path: '/index/order/detail', //跳转的路径
         query: {
             from:"order",
-            id:""
+            id:x.id
           //路由传参时push和query搭配使用 ，作用时传递参数
         },
       })
