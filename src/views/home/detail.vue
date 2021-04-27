@@ -72,6 +72,7 @@
             <span class="form-span"
                   style="width:145px;">{{y.crafts.productName}}</span>
             <span class="form-span-click">查看</span>
+            <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
           </div>
           <div class="form-item mr34">
             <label for="form-label">产品数量</label>
@@ -118,7 +119,7 @@
           <div class="form-item mr34"
                v-if="details.orderAttr.deliveryType != 3">
             <label for="form-label">快递公司</label>
-            <span class="form-span">{{details.orderAttr.waybillCode_}}</span>
+            <span class="form-span">{{details.expressCompanyName}}</span>
           </div>
         </div>
       </div>
@@ -253,13 +254,6 @@ export default {
         .then((res) => {
           if (res.code == 200) {
             this_.details = res.data
-            if (this_.details.orderAttr.deliveryType != 3) {
-              this_.details.orderAttr.waybillCode_ = this_.$store.state.expCompany.filter(
-                (item) => {
-                  return item.code == this_.details.orderAttr.waybillCode
-                }
-              )[0].name
-            }
           }
         })
     },
@@ -316,7 +310,8 @@ export default {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
-                  this_.getOrderInfo()
+                    this_.getOrderInfo()
+                    window.open("http://ga.timan.vip:8090"+ res.data);
                 })
                 .error((err) => {
                   console.log(err)
@@ -430,6 +425,22 @@ export default {
             .catch(() => {})
           break
       }
+    },
+    download(x){
+        let this_ = this;
+              this_
+                .$post('post', this_.baseUrl + '/production/getDownloadUrl', {
+                  productCode: x.crafts.productCode,
+                })
+                .then((res) => {
+                  if (res.code == 200) {
+                    this_.$message({
+                      type: 'success',
+                      message: '文件下载成功!',
+                    })
+                    window.open("http://ga.timan.vip:8090"+ res.data);
+                  }
+                })
     },
     beforeClose() {},
     resetForm() {

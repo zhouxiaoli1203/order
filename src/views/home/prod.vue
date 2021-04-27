@@ -48,6 +48,7 @@
       </div>
     </div>
     <div class="table-content">
+      <div v-if="orderList.length>0">
       <ul class="list-items">
         <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
           <div class="head">
@@ -73,6 +74,12 @@
                      @current-change="handleCurrentChange"
                      :total="total">
       </el-pagination>
+
+      </div>
+      <div class="noCont" v-else v-cloak>
+        <img :src="noOrder" alt="">
+        <p>暂无订单</p>
+      </div>
     </div>
     <el-dialog class="yhc-dialog"
     title="导出"
@@ -114,6 +121,7 @@ export default {
         exportVisible:false,
         exportDate:"",
         form:{desc:""},
+        noOrder:require('../../assets/img/noOrder.png'),
     }
   },
   components: {},
@@ -194,7 +202,7 @@ export default {
     goDetail(x){
          this.$router.push({
         //核心语句
-        path: '/index/order/detail', //跳转的路径
+        path: '/index/prod/detail', //跳转的路径
         query: {
             from:"prod",
             id:x.id

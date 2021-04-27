@@ -47,33 +47,41 @@
         <div class="btn bgWhite export" @click="openExport">导出</div>
       </div>
     </div>
-    <div class="table-content">
-      <ul class="list-items">
-        <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
-          <div class="head">
-            <h3>{{x.orderAttr.title}}</h3>
-            <span class="yixiadan">{{x.status | yhc_status}}</span>
-          </div>
-          <div class="content">
-            <p>创建：{{x.createTime}}</p>
-            <p>发货：{{x.deliveryTime}}</p>
-          </div>
-          <div class="footer">
-            <span class="fl status" :class='{"blue":x.orderAttr.goodsName=="打印","red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
-            <span class="fr icon"><img src="@/assets/img/jiantou.png" alt=""></span>
-          </div>
-        </li>
-      </ul>
-      <el-pagination class="yhc-pagination"
-                     background
-                     layout="prev, pager, next"
-                     :page-size="10"
-                     :current-page="current"
-                      @size-change="handleSizeChange"
-                     @current-change="handleCurrentChange"
-                     :total="total">
-      </el-pagination>
+    
+    <div class="table-content" >
+        <div v-if="orderList.length>0">
+        <ul class="list-items">
+            <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
+            <div class="head">
+                <h3>{{x.orderAttr.title}}</h3>
+                <span class="yixiadan">{{x.status | yhc_status}}</span>
+            </div>
+            <div class="content">
+                <p>创建：{{x.createTime}}</p>
+                <p>发货：{{x.deliveryTime}}</p>
+            </div>
+            <div class="footer">
+                <span class="fl status" :class='{"blue":x.orderAttr.goodsName=="打印","red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
+                <span class="fr icon"><img src="@/assets/img/jiantou.png" alt=""></span>
+            </div>
+            </li>
+        </ul>
+        <el-pagination class="yhc-pagination"
+                        background
+                        layout="prev, pager, next"
+                        :page-size="10"
+                        :current-page="current"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :total="total">
+        </el-pagination>
+        </div>
+      <div class="noCont" v-else v-cloak>
+        <img :src="noOrder" alt="">
+        <p>暂无订单</p>
+      </div>
     </div>
+    
     <el-dialog class="yhc-dialog"
     title="导出"
     :visible.sync="exportVisible"
@@ -114,6 +122,7 @@ export default {
         exportVisible:false,
         exportDate:"",
         form:{desc:""},
+        noOrder:require('../../assets/img/noOrder.png'),
     }
   },
   components: {},
