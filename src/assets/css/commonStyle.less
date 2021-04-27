@@ -21,12 +21,19 @@
         line-height: 32px;
     }
 }
-.yhc-dropdown{
+.yhc-select{
     margin-right: 24px;
-    padding: 5px 10px;
     background: #FFFFFF;
     border-radius: 4px;
     cursor: pointer;
+    width: 102px;
+    .el-input__inner{
+        height: 32px;
+        line-height: 32px;
+    }
+    .el-input__icon{
+        line-height: 32px;
+    }
 }
 .yhc-dialog{
     .el-dialog__header {
@@ -193,6 +200,10 @@
       margin-top: 40px;
     text-align: center;
 }
+.yhc-tooltip .el-tooltip__popper {
+    max-width: 400px;
+    line-height: 180%;
+  }
 //修改滚动条的样式
 ::-webkit-scrollbar {
     width: 8px;

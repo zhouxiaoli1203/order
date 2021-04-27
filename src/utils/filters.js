@@ -48,7 +48,11 @@ const filters = {
         let status =  constant.receiveStatus.filter((item,i)=>{
             return n == item.value;
         });
-        return status[0].name;
+        if(status.length>0){
+            return status[0].name;
+        }else{
+            return "";
+        }
     },
     yhc_source(n){
         let str = "";

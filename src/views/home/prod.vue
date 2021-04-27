@@ -2,41 +2,37 @@
   <div class='prod-page'>
     <div class="search-head">
       <div class="fl drops">
-
-        <el-dropdown class="yhc-dropdown" trigger="click">
-          <span class="el-dropdown-link">
-            订单状态<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>已驳回</el-dropdown-item>
-            <el-dropdown-item >已下单</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-
-        <el-dropdown class="yhc-dropdown" trigger="click">
-          <span class="el-dropdown-link">
-            订单状态<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="x in cost.orderType" :key="x.value">{{x.name}}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-
-        <el-dropdown class="yhc-dropdown" trigger="click">
-          <span class="el-dropdown-link">
-            订单状态<i class="el-icon-arrow-down el-icon--right"></i>
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="x in cost.orderStatus" :key="x.value">{{x.name}}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-select class="yhc-select" v-model="isStatus" placeholder="订单状态" clearable  @change="changeSearch(1)">
+            <el-option
+            v-for="x in cost.prodStatus" :key="x.value"
+            :label="x.name"
+            :value="x.value">
+            </el-option>
+        </el-select>
+        <el-select class="yhc-select" v-model="isType" placeholder="订单类型" clearable  @change="changeSearch(2)">
+            <el-option
+            v-for="x in cost.orderType" :key="x.value"
+            :label="x.name"
+            :value="x.value">
+            </el-option>
+        </el-select>
+        <el-select class="yhc-select" v-model="isTime" placeholder="时间选择" clearable  @change="changeSearch(3)" :disabled="!dropVisiable">
+            <el-option
+            v-for="x in cost.orderStatus" :key="x.value"
+            :label="x.name"
+            :value="x.value">
+            </el-option>
+        </el-select>
         <div class="yhc-item yhc-date" style="width:226px">
 
             <el-date-picker
-        v-model="value1"
+        v-model="isDate"
         type="daterange"
+        @change="changeDate"
+        :default-time="['00:00:00', '23:59:59']"
         range-separator="至"
         start-placeholder="开始日期"
+        :disabled="timeDisabled"
         end-placeholder="结束日期">
         </el-date-picker>
         </div>
@@ -44,8 +40,8 @@
       <div class="fr displayFl right-btns">
         <div class="search-input yhc-item">
           <el-input placeholder="订单号/客户姓名/联系方式"
-                    class="input-with-select">
-            <el-button slot="append">搜索</el-button>
+                    class="input-with-select" v-model="searchValue" @keyup.enter.native="searchData" >
+            <el-button slot="append" @click="searchData">搜索</el-button>
           </el-input>
         </div>
         <div class="btn bgWhite export" @click="openExport">导出</div>
@@ -56,7 +52,7 @@
         <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
           <div class="head">
             <h3>{{x.orderAttr.title}}</h3>
-            <span class="yixiadan">{{x.status==1?"已驳回":x.status==0?"待生产":""}}</span>
+            <span class="yixiadan">{{x.status==0?"待生产":"已驳回"}}</span>
           </div>
           <div class="content">
             <p>创建：{{x.createTime}}</p>
@@ -71,22 +67,13 @@
       <el-pagination class="yhc-pagination"
                      background
                      layout="prev, pager, next"
-                     :total="1000">
+                     :page-size="10"
+                     :current-page="current"
+                      @size-change="handleSizeChange"
+                     @current-change="handleCurrentChange"
+                     :total="total">
       </el-pagination>
     </div>
-    <el-dialog class="yhc-dialog"
-    title="驳回理由"
-    :visible.sync="dialogVisible"
-    width="432px">
-    <div class="yhc-item">
-        <el-input type="textarea" v-model="form.desc"></el-input>
-    </div>
-    <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-    </span>
-    </el-dialog>
-
     <el-dialog class="yhc-dialog"
     title="导出"
     :visible.sync="exportVisible"
@@ -102,8 +89,8 @@
         </el-date-picker>
         </div>
     <span slot="footer" class="dialog-footer">
-        <!-- <el-button @click="exportVisible = false">取 消</el-button> -->
-        <el-button type="primary" class="btn-blue" @click="exportVisible = false">确 定</el-button>
+        <el-button @click="exportVisible = false">取 消</el-button>
+        <el-button type="primary" @click="exportVisible = false">确 定</el-button>
     </span>
     </el-dialog>
   </div>
@@ -114,10 +101,17 @@ export default {
   name: '',
   data() {
     return {
+        isStatus:undefined,
+        isType:undefined,
+        isTime:undefined,
+        isDate:"",
+        searchValue:undefined,
+        current:1,
+        total:0,
         orderList:[],
-        dialogVisible:false,
+        dropVisiable:true,
+        timeDisabled:false,
         exportVisible:false,
-        value1:"",
         exportDate:"",
         form:{desc:""},
     }
@@ -128,23 +122,69 @@ export default {
   },
   mounted() {},
   methods: {
-    getList() {
-      this.$post('post', this.baseUrl + '/operating/listOrders').then((res) => {
-        if (res.code == 200) {
-          this.orderList = res.data;
+      changeSearch(n){
+        if(n == 3){
+             if(this.isTime){
+                this.isDate = "";
+                this.timeDisabled = true;
+            }else{
+                this.timeDisabled = false; 
+            }
         }
-      })
+        this.getList();
+      },
+      changeDate(){
+          if(this.isDate){
+              this.dropVisiable = false;
+              this.isTime = undefined;
+          }else{
+              this.dropVisiable = true;
+          }
+          this.getList();
+      },
+      searchData(){
+          this.getList();
+      },
+      getList() {
+          let this_ = this;
+          let params={
+              pageNum:this_.current,
+              pageSize:10,
+              skuId:this_.isType,
+              status: this_.isStatus,
+              keyword:this_.searchValue
+          };
+          if(this_.dropVisiable && this_.isTime){
+              params["timeType"] = this_.isTime;
+          }
+          if(this_.isDate && this_.formatDateYMDhms(this_.isDate[0]) && this_.formatDateYMDhms(this_.isDate[1])){
+            params["startDate"] = this_.formatDateYMDhms(this_.isDate[0]);
+            params["endDate"] = this_.formatDateYMDhms(this_.isDate[1]);
+          }
+          for(let i in params){
+              if(params[i] == "" || params[i] == undefined){
+                  delete params[i];
+              }
+          }
+          console.log(params);
+        this_.$post('post', this_.baseUrl + '/operating/pageOrders',params).then((res) => {
+            if (res.code == 200) {
+            this_.orderList = res.data.rows;
+            this_.current = res.data.num;
+            this_.total = res.data.total;
+            }
+        })
     },
-    renling(){
-        let this_ = this;
-        this_.confirm_pop("确定认领该条订单","认领").then(()=>{
-
-        });
+    handleSizeChange (val) {
+      this.size = val
+      // 当pageSize发生变化后需重新查询列表
+      this.getList()
     },
-    openBohui(){
-        let this_ = this;
-        this_.dialogVisible = true;
-        this_.form.desc = "";
+    // currentPage 改变时会触发
+    handleCurrentChange (val) {
+      this.current = val
+      // 当currentPage发生变化后需重新查询列表
+      this.getList()
     },
     openExport(){
         let this_ = this;
@@ -154,7 +194,7 @@ export default {
     goDetail(x){
          this.$router.push({
         //核心语句
-        path: '/index/prod/detail', //跳转的路径
+        path: '/index/order/detail', //跳转的路径
         query: {
             from:"prod",
             id:x.id
@@ -198,7 +238,7 @@ export default {
     background: #ffffff;
     border-radius: 10px;
     padding: 16px 12px;
-    box-shadow: 0 0 40px 0 #ddd;
+    box-shadow: 2px 3px 20px #ccc;
     margin:0 16px 20px 0;
     cursor: pointer;
     .head {

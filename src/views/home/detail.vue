@@ -12,12 +12,22 @@
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单编号</label>
-            <span class="form-span">{{details.orderCode}}</span>
+            <el-tooltip class="form-span item" effect="dark" :content="details.orderCode" placement="top-start">
+      <span>{{details.orderCode}}</span>
+    </el-tooltip>
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单状态</label>
-            <span class="form-span">{{details.status | yhc_status}}<i class="icon_warning fr"
-                 v-if="details.status==1"></i></span>
+            <span class="form-span">{{details.status | yhc_status}}
+              <el-tooltip v-if="details.operationLogs.length>0" class="item yhc-tooltip"
+                          effect="dark"
+                          :content="details.operationLogs[0].remark"
+                          placement="top-start">
+                <i class="icon_warning fr"
+                   v-if="details.status==1"></i>
+              </el-tooltip>
+            </span>
+
           </div>
 
         </div>
@@ -92,10 +102,10 @@
           <div class="form-item">
             <label for="form-label">配送地址</label>
             <span class="form-span"
-                  style="width:400px;"
+                  style="width:400px;white-space: pre-wrap;"
                   v-if="details.orderAttr.deliveryType == 1 || details.orderAttr.deliveryType==2">{{details.orderAttr.receiptAddress}} {{details.orderAttr.receiptDetailAddress}}</span>
             <span class="form-span"
-                  style="width:400px;"
+                  style="width:400px;white-space: pre-wrap;"
                   v-if="details.orderAttr.deliveryType == 3">{{details.orderAttr.pickUpAddress}}</span>
           </div>
 
@@ -105,9 +115,10 @@
             <label for="form-label">联系方式</label>
             <span class="form-span">{{details.orderAttr.receiptMobile}}</span>
           </div>
-          <div class="form-item mr34">
+          <div class="form-item mr34"
+               v-if="details.orderAttr.deliveryType != 3">
             <label for="form-label">快递公司</label>
-            <span class="form-span">{{details.orderAttr.waybillCode}}</span>
+            <span class="form-span">{{details.orderAttr.waybillCode_}}</span>
           </div>
         </div>
       </div>
@@ -127,7 +138,7 @@
       <div class="btn btn-operate btn-orange"
            @click="openPop(4)"
            v-if="details.status == 4">订单发货</div>
-      <div class="btn btn-operate btn-red"
+      <div class="btn btn-operate btn-blue"
            @click="openPop(6)"
            v-if="details.status == 6">同意退单</div>
       <div class="btn btn-operate btn-blue"
@@ -136,7 +147,7 @@
       <div class="btn btn-operate btn-red"
            @click="openPop(9)"
            v-if="details.status == 8">拒绝</div>
-      <div class="btn btn-operate btn-blue"
+      <div class="btn btn-operate btn-blue_"
            @click="openPop(3)"
            v-if="details.status == 3 || details.status == 6 || details.status == 9">完成生产</div>
     </div>
@@ -167,7 +178,7 @@
                      class="width100">
             <el-option :label="x.name"
                        :value="x.code"
-                       v-for="x in expCompany"
+                       v-for="x in $store.state.expCompany"
                        :key="x.code"></el-option>
           </el-select>
         </el-form-item>
@@ -229,11 +240,7 @@ export default {
     let this_ = this
     this_.fromParam = this_.$route.query
     this_.getOrderInfo()
-    this_.getExpressCompany().then((res) => {
-      if (res.code == 200) {
-        this_.expCompany = res.data
-      }
-    })
+    this_.getExpressCompany()
   },
   mounted() {},
   methods: {
@@ -246,6 +253,13 @@ export default {
         .then((res) => {
           if (res.code == 200) {
             this_.details = res.data
+            if (this_.details.orderAttr.deliveryType != 3) {
+              this_.details.orderAttr.waybillCode_ = this_.$store.state.expCompany.filter(
+                (item) => {
+                  return item.code == this_.details.orderAttr.waybillCode
+                }
+              )[0].name
+            }
           }
         })
     },
@@ -271,6 +285,9 @@ export default {
 
       this_.$refs.bohui
         .open((cancel) => {
+          if (!this_.form.desc) {
+            return this_.$message.error('请输入驳回理由')
+          }
           this_
             .$post('post', this_.baseUrl + '/operating/turnDownOrder', {
               orderId: this_.$route.query.id,
@@ -299,7 +316,10 @@ export default {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
-                    this_.getOrderInfo()
+                  this_.getOrderInfo()
+                })
+                .error((err) => {
+                  console.log(err)
                 })
             })
             .catch(() => {})
@@ -307,20 +327,20 @@ export default {
         case 3: //完成生产
           this.confirm_pop('确定该订单已完成生产？', '完成生产')
             .then(() => {
-                let this_ = this
-                this_
-                  .$post('post', this_.baseUrl + '/order/doneProduction', {
-                    orderId: this_.$route.query.id,
-                  })
-                  .then((res) => {
-                    if (res.code == 200) {
-                        this_.$message({
+              let this_ = this
+              this_
+                .$post('post', this_.baseUrl + '/order/doneProduction', {
+                  orderId: this_.$route.query.id,
+                })
+                .then((res) => {
+                  if (res.code == 200) {
+                    this_.$message({
                       type: 'success',
                       message: '完成生产!',
                     })
-                      this_.getOrderInfo()
-                    }
-                  })
+                    this_.getOrderInfo()
+                  }
+                })
             })
             .catch(() => {})
           break
@@ -350,27 +370,62 @@ export default {
             }) //这里就充分利用了open方法中返回的nextTick
           break
         case 6: //退单
-          this.$refs.tuidan
-            .open((cancel) => {
-              // cancel();
-              console.log(this.form)
-              console.log('点击提交按钮了')
-            })
+          this.confirm_pop('该订单是否同意退单', '确认提示')
             .then(() => {
-              console.log(this.$refs.span)
-            }) //这里就充分利用了open方法中返回的nextTick
+              let this_ = this
+              this_
+                .$post('post', this_.baseUrl + '/order/viaCancel', {
+                  orderId: this_.$route.query.id,
+                })
+                .then((res) => {
+                  if (res.code == 200) {
+                    this_.$message({
+                      type: 'success',
+                      message: '同意退单!',
+                    })
+                    this_.getOrderInfo()
+                  }
+                })
+            })
+            .catch(() => {})
           break
         case 8: //返厂确认--同意
           this.confirm_pop('该订单是否同意返厂', '确认提示')
             .then(() => {
-              console.log(1111)
+              let this_ = this
+              this_
+                .$post('post', this_.baseUrl + '/order/viaBack', {
+                  orderId: this_.$route.query.id,
+                })
+                .then((res) => {
+                  if (res.code == 200) {
+                    this_.$message({
+                      type: 'success',
+                      message: '同意返厂!',
+                    })
+                    this_.getOrderInfo()
+                  }
+                })
             })
             .catch(() => {})
           break
         case 9: //返厂确认--拒绝
           this.confirm_pop('该订单是否拒绝返厂', '确认提示')
             .then(() => {
-              console.log(1111)
+              let this_ = this
+              this_
+                .$post('post', this_.baseUrl + '/order/refuseBack', {
+                  orderId: this_.$route.query.id,
+                })
+                .then((res) => {
+                  if (res.code == 200) {
+                    this_.$message({
+                      type: 'success',
+                      message: '拒绝返厂!',
+                    })
+                    this_.getOrderInfo()
+                  }
+                })
             })
             .catch(() => {})
           break

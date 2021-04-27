@@ -239,6 +239,7 @@ export default {
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 100;
     .title {
       padding: 18px 16px;
       font-size: 20px;
@@ -399,6 +400,7 @@ export default {
 .mes-ul {
   display: flex;
   flex-direction: column;
+  width: 100%;
   > li {
     &:hover {
       background-color: #f9f7f7;

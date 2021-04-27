@@ -19,8 +19,12 @@ const constant = {
         {name:"同城配送",value:"2"},
         {name:"自提",value:"3"},
     ],
-    receiveStatus:[
+    prodStatus:[
         {name:"待生产",value:"0"},
+        {name:"已驳回",value:"1"},
+    ],
+    receiveStatus:[
+        // {name:"待生产",value:"0"},
         {name:"已驳回",value:"1"},
         {name:"待生产",value:"2"},
         {name:"生产中",value:"3"},

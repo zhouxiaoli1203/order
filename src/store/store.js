@@ -11,7 +11,8 @@ export default new Vuex.Store({
       menuLeft:'',
       token:'',
       userId:'',
-      userInfo:''
+      userInfo:'',
+      expCompany:[]
     },
 
     //操作数据，唯一的通道是mutations/*配置全局函数*/

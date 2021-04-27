@@ -71,7 +71,7 @@ export default {
     right: 0;
     height: 100%;
     background: #fff;
-
+    z-index: 100;
     h2{
         line-height: 64px;
         text-align: center;
