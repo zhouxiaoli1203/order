@@ -126,7 +126,6 @@ export function yhcReq(methods, url, params,yhc_f_a) {/*  */
         r.then(res => {
             resolve(res.data);
         }).catch(err => {
-            debugger
             console.log(`%c【Status Code:${err.data.status}, Message:${err.data.msg}${err.config&&err.config.url?', Request URL:'+err.config.url:''}】`, 'color: #ee0a24;font-size: 12px;font-weight: 400;');
             //业务代码需要catch 主要避免Uncaught (in promise)的错误报错
             // (needCatch || (typeof yhc_f_a === 'boolean' && yhc_f_a)) && reject(err);

@@ -37,7 +37,7 @@
              @click="msgVisible = true">
           <img :src="headNoctice"
                alt="">
-          <span class="mark">40</span>
+          <span class="mark" v-if="showNotice">40</span>
 
         </div>
         <div class="info">
@@ -113,6 +113,7 @@ export default {
   name: '',
   data() {
     return {
+        showNotice:false,
         nickName:"",
       currentInd: "/prod",
       headOrder: require('../assets/img/headOrder.png'),
@@ -137,17 +138,22 @@ export default {
         { name: '生产大厅', id: '/prod', value: 'ting', path: '/index/prod' },
         { name: '订单管理', id: '/order', value: 'order', path: '/index/order' },
       ],
+     
     }
   },
   components: {},
   created() {
       this.getPath ();
       this.getAccount();
+     
     // let token = this.$store.state.token
     // localStorage.setItem('token', token)
   },
-  mounted() {},
+  mounted() {
+     
+  },
   methods: {
+      
       getAccount(){
         this.$post(
             'get',
@@ -221,7 +227,7 @@ export default {
     },
   },
   watch: {
-    '$route': 'getPath'  //监听浏览器后退导航高亮问题
+    '$route': 'getPath',  //监听浏览器后退导航高亮问题
   }
 }
 </script>
@@ -462,4 +468,5 @@ export default {
     }
   }
 }
+
 </style>
