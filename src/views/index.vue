@@ -207,7 +207,7 @@ export default {
       this.passwordPorp = false
     },
     signOut() {
-      localStorage.removeItem('token')
+      localStorage.removeItem('wutu_token')
       this.$router.push({
         //核心语句
         path: '/', //跳转的路径

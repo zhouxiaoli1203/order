@@ -9,7 +9,7 @@ export default new Vuex.Store({
       currentIndex:"/index",
       publicHome:'',
       menuLeft:'',
-      token:'',
+      wutu_token:'',
       userId:'',
       userInfo:'',
       expCompany:[],

@@ -53,7 +53,7 @@
         <ul class="list-items">
             <li class="list-card" v-for="x in orderList" @click="goDetail(x)">
             <div class="head">
-                <h3>{{x.orderAttr.title}}</h3>
+                <h3 :title="x.orderAttr.title">{{x.orderAttr.title}}</h3>
                 <span class="yixiadan">{{x.status | yhc_status}}</span>
             </div>
             <div class="content">
@@ -178,7 +178,10 @@ export default {
           console.log(params);
         this_.$post('post', this_.baseUrl + '/order/page',params).then((res) => {
             if (res.code == 200) {
-            this_.orderList = res.data.rows;
+                this_.orderList = res.data.rows;
+            // this_.orderList = res.data.rows.filter((item)=>{
+            //     return item.status != 0;
+            // });
             this_.current = res.data.num;
             this_.total = res.data.total;
             }
@@ -257,6 +260,10 @@ export default {
         font-size: 16px;
         font-weight: 500;
         color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 192px;
       }
     }
     .content {

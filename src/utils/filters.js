@@ -72,16 +72,14 @@ const filters = {
         });
         return str;
     },
-    yhc_wayBill(n){
-        // Fns.getExpressCompany().then((res)=>{
-        //     if(res.code == 200){
-        //         let type =  res.data.filter((item,i)=>{
-        //             // return n == item.value;
-        //         });
-        //     }
-        // });
-        
-        // return type[0].name;
+    yhc_wayBill(n,list){
+        let str = "";
+        list.map((item,i)=>{
+            if(n == item.code){
+                str = item.name;
+            }
+        });
+        return str;
     }
     
 }

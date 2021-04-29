@@ -5,7 +5,7 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import store from './store/store'
-import { yhcReq,baseUrl } from './utils/http'
+import { yhcReq,baseUrl,loadURL } from './utils/http'
 import constant from './utils/constant'
 import './utils/directive' //阻止按钮同一时间内多次触发
 //全局公用函数
@@ -27,6 +27,7 @@ Vue.use(ElementUI);
 
 Vue.prototype.$post = yhcReq;
 Vue.prototype.baseUrl = baseUrl;
+Vue.prototype.loadURL = loadURL;
 Vue.prototype.cost = constant;
 /* eslint-disable no-new */
 new Vue({

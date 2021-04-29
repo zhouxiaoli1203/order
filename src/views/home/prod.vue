@@ -2,7 +2,7 @@
   <div class='prod-page'>
     <div class="search-head">
       <div class="fl drops">
-        <el-select class="yhc-select"
+        <!-- <el-select class="yhc-select"
                    v-model="isStatus"
                    placeholder="订单状态"
                    clearable
@@ -12,7 +12,7 @@
                      :label="x.name"
                      :value="x.value">
           </el-option>
-        </el-select>
+        </el-select> -->
         <el-select class="yhc-select"
                    v-model="isType"
                    placeholder="订单类型"
@@ -141,6 +141,7 @@ export default {
   name: '',
   data() {
     return {
+        timer:null,
       showNotice: false,
       isStatus: undefined,
       isType: undefined,
@@ -169,9 +170,9 @@ export default {
     this.getChange()
   },
   mounted() {
-    setInterval(() => {
+   this.timer =  setInterval(() => {
       this.getChange()
-    }, 3000)
+    }, 5000)
   },
   methods: {
     handlePlayAudio() {
@@ -219,7 +220,7 @@ export default {
         pageNum: this_.current,
         pageSize: 10,
         skuId: this_.isType,
-        status: this_.isStatus,
+        // status: this_.isStatus,
         keyword: this_.searchValue,
       }
       if (this_.dropVisiable && this_.isTime) {
@@ -294,6 +295,10 @@ export default {
         }
       },
     },
+  },
+  beforeDestroy() {
+    clearInterval(this.timer);        
+    this.timer = null;
   },
 }
 </script>

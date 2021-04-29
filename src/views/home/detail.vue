@@ -1,7 +1,7 @@
 <template>
   <div class='detail-page'
        v-if="details">
-    <div class="page-title"><span class="gray-font">{{fromParam.from=="order"?"订单管理":"生产大厅"}} / </span>{{details.orderAttr.title}}</div>
+    <div class="page-title"><span class="gray-font cursor_p" @click="pathIndex">{{fromParam.from=="order"?"订单管理":"生产大厅"}} / </span>{{details.orderAttr.title}}</div>
     <div class="detail-form order-info">
       <div class="form-head">订单信息</div>
       <div class="form-content">
@@ -12,20 +12,19 @@
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单编号</label>
-            <el-tooltip class="form-span item" effect="dark" :content="details.orderCode" placement="top-start">
-      <span>{{details.orderCode}}</span>
+            <input type="text" class="form-span" readonly v-model="details.orderCode">
     </el-tooltip>
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单状态</label>
             <span class="form-span">{{details.status | yhc_status}}
-              <el-tooltip v-if="details.operationLogs.length>0" class="item yhc-tooltip"
+              <el-tooltip v-if="details.status==1 && details.operationLogs.length>0" class="item yhc-tooltip"
                           effect="dark"
                           :content="details.operationLogs[0].remark"
                           placement="top-start">
-                <i class="icon_warning fr"
-                   v-if="details.status==1"></i>
+                <i class="icon_warning fr"></i>
               </el-tooltip>
+              <span class="item fr cursor_p" v-if="details.status==8" @click="openFanchang"><i class="icon_warning fr"></i></span>
             </span>
 
           </div>
@@ -69,8 +68,7 @@
           </div>
           <div class="form-item mr34">
             <label for="form-label">产品文件1</label>
-            <span class="form-span"
-                  style="width:145px;">{{y.crafts.productName}}</span>
+            <input type="text" class="form-span" readonly v-model="y.crafts.productName" style="width:145px;">
             <span class="form-span-click">查看</span>
             <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
           </div>
@@ -119,8 +117,24 @@
           <div class="form-item mr34"
                v-if="details.orderAttr.deliveryType != 3">
             <label for="form-label">快递公司</label>
+            <span class="form-span">{{details.orderAttr.waybillCode | yhc_wayBill($store.state.expCompany)}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-form order-info" v-if="details.status == 5">
+      <div class="form-head">发货信息</div>
+      <div class="form-content">
+        <div class="form-line clearfix">
+          <div class="form-item mr34">
+            <label for="form-label">物流名称</label>
             <span class="form-span">{{details.expressCompanyName}}</span>
           </div>
+          <div class="form-item mr34">
+            <label for="form-label">物流单号</label>
+            <span class="form-span">{{details.expressCode}}</span>
+          </div>
+
         </div>
       </div>
     </div>
@@ -191,14 +205,20 @@
       </el-form>
     </Dialog>
     <!-- 退单弹框 -->
-    <Dialog ref="tuidan"
-            :config="tuidanconfig"
+    <Dialog ref="fanchang"
+            :config="fanchangconfig"
             :beforeClose="beforeClose"
             @close="resetForm">
-      <div class="yhc-item">
-        <el-input type="textarea"
-                  v-model="form.desc"></el-input>
+      <div class="yhc-item" v-if="details.orderBack">
+            <div class="el-textarea__inner">{{details.orderBack.description}}</div>
       </div>
+      <div class="shangchuan">
+            <ul>
+                <li v-for="(item, index) in fileList" :key="index">
+                    <img :src="item.url" alt="" class="img">
+                </li>
+            </ul>
+        </div>
     </Dialog>
   </div>
 </template>
@@ -226,13 +246,14 @@ export default {
         center: false,
         btnTxt: ['取消', '确认'],
       },
-      tuidanconfig: {
+      fanchangconfig: {
         // top: '20vh',
         width: '432px',
-        title: '退单理由',
+        title: '返厂理由',
         center: false,
-        btnTxt: ['取消', '确认'],
+        btnTxt: ['取消'],
       },
+      fileList:[],
       fromParam: {},
     }
   },
@@ -245,6 +266,10 @@ export default {
   },
   mounted() {},
   methods: {
+      // 跳转
+    pathIndex(){
+      this.$router.go(-1)
+    },
     getOrderInfo() {
       let this_ = this
       this_
@@ -299,6 +324,26 @@ export default {
           console.log(this.form.dec)
         }) //这里就充分利用了open方法中返回的nextTick
     },
+    openFanchang(){
+        let this_ = this
+
+      this_.$refs.fanchang
+        .open((cancel) => {
+
+        })
+        .then(() => {
+             let d_ = this.details.orderBack;
+            let arr = [],arr_ = [];;
+            if(d_){
+                arr = d_.pics.split(",");
+            }
+            arr.map((item)=>{
+                arr_.push({"url":this.loadURL+item});
+            });
+            this.fileList = arr_;
+          return;
+        }) 
+    },
     openPop(n) {
       switch (n) {
         case 2: //开始生产
@@ -310,8 +355,10 @@ export default {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
-                    this_.getOrderInfo()
-                    window.open("http://ga.timan.vip:8090"+ res.data);
+                    if(res.code == 200){
+                        this_.getOrderInfo()
+                        window.open(this.loadURL+ res.data);
+                    }
                 })
                 .error((err) => {
                   console.log(err)
@@ -343,6 +390,9 @@ export default {
           let this_ = this
           this_.$refs.fahuo
             .open((cancel) => {
+                if(!this_.form.danhao){
+                    return this.$message.error("请输入运单号");
+                }
               this_
                 .$post('post', this_.baseUrl + '/order/delivery', {
                   orderId: this_.$route.query.id,
@@ -426,6 +476,7 @@ export default {
           break
       }
     },
+    
     download(x){
         let this_ = this;
               this_
@@ -438,7 +489,7 @@ export default {
                       type: 'success',
                       message: '文件下载成功!',
                     })
-                    window.open("http://ga.timan.vip:8090"+ res.data);
+                    window.open(this.loadURL+ res.data);
                   }
                 })
     },
@@ -463,4 +514,23 @@ export default {
     width: 100%;
   }
 }
+ .shangchuan{
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                ul{
+                    display: flex;
+                    align-items: center;
+                }
+                li{
+                    margin-right: 13px;
+                    position: relative;
+                    .img{
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                    }
+                }
+            }
 </style>

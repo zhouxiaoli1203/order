@@ -30,7 +30,7 @@ export default {
   },
   components: {},
   created(){
-      localStorage.removeItem("token");
+      localStorage.removeItem("wutu_token");
   },
   mounted(){},
   methods: {
@@ -44,7 +44,7 @@ export default {
           }
           axios.post(this.baseUrl+"/login",data).then((res)=>{
              if(res.data.code == 200){
-                  localStorage.setItem("token", res.data.token);
+                  localStorage.setItem("wutu_token", res.data.token);
                 // this.$store.state.token = res.data.token;
                      this.$router.push({  //核心语句
                         path:'/index/prod',   //跳转的路径

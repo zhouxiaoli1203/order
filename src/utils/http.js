@@ -26,19 +26,22 @@ let isApp, isWechat, yhcmessage;
 // };
 
 // 环境的切换
-// if (process.env.NODE_ENV == 'development') {
-//     axios.defaults.baseURL = 'https://api.yihuichuang.com/';
-//     // isApp = /app.html/.test(url)
-//     // isWechat = /weChat.html/.test(url)
-// } else if (process.env.NODE_ENV == 'debug') {
-//     axios.defaults.baseURL = '';
-// } else if (process.env.NODE_ENV == 'production') {
-//     axios.defaults.baseURL = 'https://api.yihuichuang.com/';
-// } else if (process.env.NODE_ENV == 'testing') {
-//     // isApp = /show_app/.test(url)
-//     // isWechat = /show_h5/.test(url)
-//     axios.defaults.baseURL = 'https://api.yihuichuang.com/';
-// }
+if (process.env.NODE_ENV == 'development') {
+    axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
+    axios.defaults.loadURL = 'http://wutuapi.gundongyongheng.com';
+    // isApp = /app.html/.test(url)
+    // isWechat = /weChat.html/.test(url)
+} else if (process.env.NODE_ENV == 'debug') {
+    axios.defaults.baseURL = '';
+} else if (process.env.NODE_ENV == 'production') {
+    axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
+    axios.defaults.loadURL = 'http://wutuapi.gundongyongheng.com';
+} else if (process.env.NODE_ENV == 'testing') {
+    // isApp = /show_app/.test(url)
+    // isWechat = /show_h5/.test(url)
+    axios.defaults.baseURL = 'http://ga.timan.vip:8090/cms';
+    axios.defaults.loadURL = 'http://ga.timan.vip:8090';
+}
 
 let token_invalid = false;
 // yhcmessage = isApp || isWechat ? Toast : "错误";
@@ -55,8 +58,8 @@ axios.interceptors.request.use(
         // config.headers.token = localStorage.getItem('token');
         // config.yhc_f_a = config[config.method == 'post' ? 'data' : 'params'].yhc_f_a;
         // delete config[config.method == 'post' ? 'data' : 'params'].yhc_f_a;
-        if(localStorage.getItem('token')){
-            config.headers.Authorization = "Bearer"+" "+localStorage.getItem('token');
+        if(localStorage.getItem('wutu_token')){
+            config.headers.Authorization = "Bearer"+" "+localStorage.getItem('wutu_token');
         }
         if (config.method == 'post') {
             config.data =JSON.stringify(config.data);
@@ -78,7 +81,7 @@ axios.interceptors.response.use(
             //token失效的状态码
             if (response.data.code == '401') {
                 if (!token_invalid) {
-                    localStorage.removeItem('token');
+                    localStorage.removeItem('wutu_token');
                 //    window.location.href="/login"
                 }
                 token_invalid = true;
@@ -133,5 +136,6 @@ export function yhcReq(methods, url, params,yhc_f_a) {/*  */
     });
 }
 
+export const baseUrl = "http://ga.timan.vip:8090/cms"
+export const loadURL = "http://ga.timan.vip:8090"
 // export const baseUrl = window.location.protocol + '//' + window.location.host
-export const baseUrl = 'http://ga.timan.vip:8090/cms'
