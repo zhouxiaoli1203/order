@@ -64,7 +64,7 @@
         <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label">产品尺寸1</label>
-            <span class="form-span">{{(y.attributes.width/1000)|tofix(3)}}*{{(y.attributes.height/1000)|tofix(3)}}mm</span>
+            <span class="form-span">{{(y.attributes.width/1000)}}*{{(y.attributes.height/1000)}}m</span>
           </div>
           <div class="form-item mr34">
             <label for="form-label">产品文件1</label>
