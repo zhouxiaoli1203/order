@@ -26,7 +26,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 
 Vue.prototype.$post = yhcReq;
-Vue.prototype.baseUrl = baseUrl;
+// Vue.prototype.baseUrl = baseUrl;
 Vue.prototype.loadURL = loadURL;
 Vue.prototype.cost = constant;
 /* eslint-disable no-new */

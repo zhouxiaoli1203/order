@@ -1,7 +1,7 @@
 import store from '@/store/store'
 const Fns={
     getExpressCompany(){
-       this.$post("get",this.baseUrl+"/order/listExpressCompany").then((res)=>{
+       this.$post("get","/order/listExpressCompany").then((res)=>{
         if(res.code == 200){
             store.state.expCompany = res.data;
         }

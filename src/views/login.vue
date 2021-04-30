@@ -42,7 +42,7 @@ export default {
                "password": this.form.pwd,
                 "username": this.form.account,
           }
-          axios.post(this.baseUrl+"/login",data).then((res)=>{
+          axios.post("/login",data).then((res)=>{
              if(res.data.code == 200){
                   localStorage.setItem("wutu_token", res.data.token);
                 // this.$store.state.token = res.data.token;
@@ -53,9 +53,6 @@ export default {
                     
               }
           });
-        //   this.$post("post",this.baseUrl+"/login",data,"uneedAuthor").then((res)=>{
-              
-        //   });
        
       }
   }

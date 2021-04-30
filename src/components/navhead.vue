@@ -134,7 +134,7 @@ export default {
           }
           this.$post(
             'post',
-            this.baseUrl + '/system/user/profile/updatePwd',
+            '/system/user/profile/updatePwd',
             data
           ).then((res) => {
             if (res.code == 200) {

@@ -182,7 +182,7 @@ export default {
       this.showNotice = false
     },
     getChange() {
-      this.$post('post', this.baseUrl + '/operating/pageOrders', {
+      this.$post('post','/operating/pageOrders', {
         pageNum: 1,
         pageSize: 10,
       }).then((res) => {
@@ -240,7 +240,7 @@ export default {
         }
       }
       this_
-        .$post('post', this_.baseUrl + '/operating/pageOrders', params)
+        .$post('post','/operating/pageOrders', params)
         .then((res) => {
           if (res.code == 200) {
             this_.orderList = res.data.rows
@@ -261,9 +261,13 @@ export default {
       this.getList()
     },
     openExport() {
-      let this_ = this
-      this_.exportVisible = true
-      this_.exportDate = ''
+    //   let this_ = this
+    //   this_.exportVisible = true
+    //   this_.exportDate = ''
+     this.$message({
+          message: '该功能正在开发，敬请期待哦！',
+          type: 'warning'
+        });
     },
     goDetail(x) {
       this.$router.push({

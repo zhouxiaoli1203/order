@@ -122,7 +122,7 @@
         </div>
       </div>
     </div>
-    <div class="detail-form order-info" v-if="details.status == 5">
+    <div class="detail-form order-info">
       <div class="form-head">发货信息</div>
       <div class="form-content">
         <div class="form-line clearfix">
@@ -277,7 +277,7 @@ export default {
     getOrderInfo() {
       let this_ = this
       this_
-        .$post('post', this_.baseUrl + '/order/getById', {
+        .$post('post','/order/getById', {
           orderId: this_.$route.query.id,
         })
         .then((res) => {
@@ -291,7 +291,7 @@ export default {
       this.confirm_pop('确定认领该条订单', '认领')
         .then(() => {
           this_
-            .$post('post', this_.baseUrl + '/operating/receiveOrder', {
+            .$post('post','/operating/receiveOrder', {
               orderId: this_.$route.query.id,
             })
             .then((res) => {
@@ -312,7 +312,7 @@ export default {
             return this_.$message.error('请输入驳回理由')
           }
           this_
-            .$post('post', this_.baseUrl + '/operating/turnDownOrder', {
+            .$post('post','/operating/turnDownOrder', {
               orderId: this_.$route.query.id,
               remark: this_.form.desc,
             })
@@ -354,12 +354,13 @@ export default {
         case 2: //开始生产
         //   this.confirm_pop('该条订单是否开始生产', '开始生产')
         //     .then(() => {
-              this.$post('post', this.baseUrl + '/order/downloadProdFile', {
+              this.$post('post','/order/downloadProdFile', {
                   orderId: this.$route.query.id,
                 })
                 .then((res) => {
                     if(res.code == 200){
                         this.getOrderInfo()
+                        console.log(this.loadURL);
                         window.open(this.loadURL+ res.data);
                     }
                 })
@@ -371,7 +372,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post', this_.baseUrl + '/order/doneProduction', {
+                .$post('post', '/order/doneProduction', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -394,7 +395,7 @@ export default {
                     return this.$message.error("请输入运单号");
                 }
               this_
-                .$post('post', this_.baseUrl + '/order/delivery', {
+                .$post('post','/order/delivery', {
                   orderId: this_.$route.query.id,
                   companyCode: this_.form.wuliu,
                   waybillCode: this_.form.danhao,
@@ -419,7 +420,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post', this_.baseUrl + '/order/viaCancel', {
+                .$post('post','/order/viaCancel', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -439,7 +440,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post', this_.baseUrl + '/order/viaBack', {
+                .$post('post','/order/viaBack', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -459,7 +460,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post', this_.baseUrl + '/order/refuseBack', {
+                .$post('post','/order/refuseBack', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -480,7 +481,7 @@ export default {
     download(x){
         let this_ = this;
               this_
-                .$post('post', this_.baseUrl + '/production/getDownloadUrl', {
+                .$post('post','/production/getDownloadUrl', {
                   productCode: x.attributes.productCode,
                 })
                 .then((res) => {

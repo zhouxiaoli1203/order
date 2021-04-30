@@ -24,23 +24,19 @@ let isApp, isWechat, yhcmessage;
 
 //     yhcReq("post", "api/oa/commitJsException", jsLog);
 // };
-
 // 环境的切换
 if (process.env.NODE_ENV == 'development') {
-    axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
-    axios.defaults.loadURL = 'http://wutuapi.gundongyongheng.com';
+    axios.defaults.baseURL = 'http://ga.timan.vip:8090/cms';
     // isApp = /app.html/.test(url)
     // isWechat = /weChat.html/.test(url)
 } else if (process.env.NODE_ENV == 'debug') {
     axios.defaults.baseURL = '';
 } else if (process.env.NODE_ENV == 'production') {
     axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
-    axios.defaults.loadURL = 'http://wutuapi.gundongyongheng.com';
 } else if (process.env.NODE_ENV == 'testing') {
     // isApp = /show_app/.test(url)
     // isWechat = /show_h5/.test(url)
     axios.defaults.baseURL = 'http://ga.timan.vip:8090/cms';
-    axios.defaults.loadURL = 'http://ga.timan.vip:8090';
 }
 
 let token_invalid = false;
@@ -73,6 +69,7 @@ axios.interceptors.request.use(
 // // 响应拦截器
 axios.interceptors.response.use(
     response => {
+        debugger
         if (response.data.code == 200) {
             token_invalid = false;
             return Promise.resolve(response);
@@ -135,7 +132,4 @@ export function yhcReq(methods, url, params,yhc_f_a) {/*  */
         })
     });
 }
-
-export const baseUrl = "http://ga.timan.vip:8090/cms"
-export const loadURL = "http://ga.timan.vip:8090"
-// export const baseUrl = window.location.protocol + '//' + window.location.host
+export const loadURL=process.env.NODE_ENV == 'development'?"http://ga.timan.vip:8090":process.env.NODE_ENV == 'production'?'http://wutuapi.gundongyongheng.com':'http://ga.timan.vip:8090';

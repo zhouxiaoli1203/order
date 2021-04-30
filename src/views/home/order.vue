@@ -176,7 +176,7 @@ export default {
               }
           }
           console.log(params);
-        this_.$post('post', this_.baseUrl + '/order/page',params).then((res) => {
+        this_.$post('post','/order/page',params).then((res) => {
             if (res.code == 200) {
                 this_.orderList = res.data.rows;
             // this_.orderList = res.data.rows.filter((item)=>{
@@ -199,9 +199,13 @@ export default {
       this.getList()
     },
     openExport(){
-        let this_ = this;
-        this_.exportVisible = true;
-        this_.exportDate = "";
+        // let this_ = this;
+        // this_.exportVisible = true;
+        // this_.exportDate = "";
+         this.$message({
+          message: '该功能正在开发，敬请期待哦！',
+          type: 'warning'
+        });
     },
     goDetail(x){
          this.$router.push({

@@ -13,7 +13,7 @@
     </div>
     <div class="head-nav">
       <div class="headLeft">
-        <span class="down cursor_p">条幅设计器下载</span>
+        <!-- <span class="down cursor_p">条幅设计器下载</span>
         <div class="img cursor_p"
              v-clickoutside="handleClose">
           <img :src="headOrder"
@@ -31,15 +31,15 @@
               </ul>
             </div>
           </div>
-        </div>
+        </div> -->
 
-        <div class="img cursor_p"
+        <!-- <div class="img cursor_p"
              @click="msgVisible = true">
           <img :src="headNoctice"
                alt="">
           <span class="mark" v-if="showNotice">40</span>
 
-        </div>
+        </div> -->
         <div class="info">
           <p @click="passwordPorp = true">{{nickName}} &nbsp/</p>
           <span class="cursor_p"
@@ -157,7 +157,7 @@ export default {
       getAccount(){
         this.$post(
             'get',
-            this.baseUrl + '/getInfo',
+           '/getInfo',
           ).then((res) => {
             if (res.code == 200) {
               this.nickName = res.user.nickName;
@@ -186,7 +186,7 @@ export default {
           }
           this.$post(
             'post',
-            this.baseUrl + '/system/user/profile/updatePwd',
+            '/system/user/profile/updatePwd',
             data
           ).then((res) => {
             if (res.code == 200) {
