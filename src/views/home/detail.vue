@@ -64,11 +64,11 @@
         <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label">产品尺寸1</label>
-            <span class="form-span">{{y.crafts.width}}*{{y.crafts.height}}mm</span>
+            <span class="form-span">{{(y.attributes.width/1000)|tofix(3)}}*{{(y.attributes.height/1000)|tofix(3)}}mm</span>
           </div>
           <div class="form-item mr34">
             <label for="form-label">产品文件1</label>
-            <input type="text" class="form-span" readonly v-model="y.crafts.productName" style="width:145px;">
+            <input type="text" class="form-span" readonly v-model="y.attributes.productName" style="width:145px;">
             <span class="form-span-click">查看</span>
             <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
           </div>
@@ -148,8 +148,7 @@
     <div class="detail-btns"
          v-if="fromParam.from=='order'">
       <div class="btn btn-operate btn-blue"
-           @click="openPop(2)"
-           v-if="details.status == 2">开始生产</div>
+           @click="openPop(2)">下载</div>
       <div class="btn btn-operate btn-orange"
            @click="openPop(4)"
            v-if="details.status == 4">订单发货</div>
@@ -208,14 +207,19 @@
     <Dialog ref="fanchang"
             :config="fanchangconfig"
             :beforeClose="beforeClose"
+            modal-append-to-body="false"
             @close="resetForm">
       <div class="yhc-item" v-if="details.orderBack">
             <div class="el-textarea__inner">{{details.orderBack.description}}</div>
       </div>
-      <div class="shangchuan">
+      <div class="shangchuan" v-if="fileList.length>0">
             <ul>
-                <li v-for="(item, index) in fileList" :key="index">
-                    <img :src="item.url" alt="" class="img">
+                <li v-for="(item,index) in fileList" :key="index">
+                    <!-- <img :src="item.url" alt="" class="img"> -->
+                     <el-image  class="img" z-index="3000"
+                        :src="item" 
+                        :preview-src-list="fileList">
+                    </el-image>
                 </li>
             </ul>
         </div>
@@ -334,37 +338,33 @@ export default {
         .then(() => {
              let d_ = this.details.orderBack;
             let arr = [],arr_ = [];;
-            if(d_){
+            if(d_ && d_.pics != ""){
                 arr = d_.pics.split(",");
+                arr.map((item)=>{
+                    arr_.push(this.loadURL+item);
+                });
             }
-            arr.map((item)=>{
-                arr_.push({"url":this.loadURL+item});
-            });
             this.fileList = arr_;
-          return;
+            
+            return;
         }) 
     },
     openPop(n) {
       switch (n) {
         case 2: //开始生产
-          this.confirm_pop('该条订单是否开始生产', '开始生产')
-            .then(() => {
-              let this_ = this
-              this_
-                .$post('post', this_.baseUrl + '/order/downloadProdFile', {
-                  orderId: this_.$route.query.id,
+        //   this.confirm_pop('该条订单是否开始生产', '开始生产')
+        //     .then(() => {
+              this.$post('post', this.baseUrl + '/order/downloadProdFile', {
+                  orderId: this.$route.query.id,
                 })
                 .then((res) => {
                     if(res.code == 200){
-                        this_.getOrderInfo()
+                        this.getOrderInfo()
                         window.open(this.loadURL+ res.data);
                     }
                 })
-                .error((err) => {
-                  console.log(err)
-                })
-            })
-            .catch(() => {})
+            // })
+            // .catch(() => {})
           break
         case 3: //完成生产
           this.confirm_pop('确定该订单已完成生产？', '完成生产')
@@ -481,7 +481,7 @@ export default {
         let this_ = this;
               this_
                 .$post('post', this_.baseUrl + '/production/getDownloadUrl', {
-                  productCode: x.crafts.productCode,
+                  productCode: x.attributes.productCode,
                 })
                 .then((res) => {
                   if (res.code == 200) {
@@ -514,6 +514,7 @@ export default {
     width: 100%;
   }
 }
+
  .shangchuan{
                 margin-top: 10px;
                 display: flex;
