@@ -80,7 +80,7 @@
             </div>
             <div class="footer">
               <span class="fl status"
-                    :class='{"blue":x.orderAttr.goodsName=="打印","red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
+                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
               <span class="fr icon"><img src="@/assets/img/jiantou.png"
                      alt=""></span>
             </div>
@@ -141,7 +141,7 @@ export default {
   name: '',
   data() {
     return {
-        timer:null,
+      timer: null,
       showNotice: false,
       isStatus: undefined,
       isType: undefined,
@@ -159,18 +159,32 @@ export default {
       form: { desc: '' },
       noOrder: require('../../assets/img/noOrder.png'),
       resData: {
-        questionAudio:
-          'https://api.gundongyongheng.com/clock.mp3', // 音频
+        questionAudio: 'https://api.gundongyongheng.com/clock.mp3', // 音频
       },
+      oldParams: {},
     }
   },
   components: {},
   created() {
-    this.getList()
+    let xinxi = this.$store.getters.getOrderInfo
+    if (xinxi) {
+        this.isType = xinxi.isType;
+        this.isTime = xinxi.isTime;
+        this.isDate = xinxi.isDate;
+        this.searchValue = xinxi.searchValue;
+        this.current = xinxi.current;
+        this.dropVisiable = xinxi.dropVisiable;
+        this.timeDisabled = xinxi.timeDisabled;
+
+
+      this.getList(xinxi)
+    } else {
+      this.getList()
+    }
     this.getChange()
   },
   mounted() {
-   this.timer =  setInterval(() => {
+    this.timer = setInterval(() => {
       this.getChange()
     }, 5000)
   },
@@ -200,6 +214,7 @@ export default {
           this.timeDisabled = false
         }
       }
+      this.current = 1;
       this.getList()
     },
     changeDate() {
@@ -209,43 +224,46 @@ export default {
       } else {
         this.dropVisiable = true
       }
+      this.current = 1;
       this.getList()
     },
     searchData() {
       this.getList()
     },
-    getList() {
-      let this_ = this
-      let params = {
-        pageNum: this_.current,
-        pageSize: 10,
-        skuId: this_.isType,
-        // status: this_.isStatus,
-        keyword: this_.searchValue,
-      }
-      if (this_.dropVisiable && this_.isTime) {
-        params['timeType'] = this_.isTime
-      }
-      if (
-        this_.isDate &&
-        this_.formatDateYMDhms(this_.isDate[0]) &&
-        this_.formatDateYMDhms(this_.isDate[1])
-      ) {
-        params['startDate'] = this_.formatDateYMDhms(this_.isDate[0])
-        params['endDate'] = this_.formatDateYMDhms(this_.isDate[1])
-      }
+    getList(p_) {
+      let this_ = p_?p_:this;
+       let params = {
+          pageNum: this_.current || 1,
+          pageSize: 10,
+          skuId: this_.isType,
+          // status: this_.isStatus,
+          keyword: this_.searchValue,
+        }
+        if (this_.dropVisiable && this_.isTime) {
+          params['timeType'] = this_.isTime
+        }
+        if (
+          this_.isDate &&
+          this.formatDateYMDhms(this_.isDate[0]) &&
+          this.formatDateYMDhms(this_.isDate[1])
+        ) {
+          params['startDate'] = this.formatDateYMDhms(this_.isDate[0])
+          params['endDate'] = this.formatDateYMDhms(this_.isDate[1])
+        }
+        
+      console.log(params)
       for (let i in params) {
         if (params[i] == '' || params[i] == undefined) {
           delete params[i]
         }
       }
-      this_
+      this
         .$post('post','/operating/pageOrders', params)
         .then((res) => {
           if (res.code == 200) {
-            this_.orderList = res.data.rows
-            this_.current = res.data.num
-            this_.total = res.data.total
+            this.orderList = res.data.rows
+            // this_.current = res.data.num
+            this.total = res.data.total
           }
         })
     },
@@ -257,7 +275,9 @@ export default {
     // currentPage 改变时会触发
     handleCurrentChange(val) {
       this.current = val
+      let {current,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled} = this;
       // 当currentPage发生变化后需重新查询列表
+      this.$store.commit('setOrderInfo',{current,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled,timeDisabled})
       this.getList()
     },
     openExport() {
@@ -270,6 +290,8 @@ export default {
         });
     },
     goDetail(x) {
+        let {current,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled} = this;
+      this.$store.commit('setOrderInfo',{current,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled})
       this.$router.push({
         //核心语句
         path: '/index/prod/detail', //跳转的路径
@@ -301,8 +323,8 @@ export default {
     },
   },
   beforeDestroy() {
-    clearInterval(this.timer);        
-    this.timer = null;
+    clearInterval(this.timer)
+    this.timer = null
   },
 }
 </script>
@@ -349,6 +371,10 @@ export default {
         font-size: 16px;
         font-weight: 500;
         color: #333;
+        max-width: 192px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .content {

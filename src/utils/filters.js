@@ -45,6 +45,9 @@ const filters = {
         return Fns.formatDate(date, type);
     },
     yhc_status(n){
+        if(n == 0){
+            return "待生产";
+        }
         let status =  constant.receiveStatus.filter((item,i)=>{
             return n == item.value;
         });

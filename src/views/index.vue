@@ -167,6 +167,12 @@ export default {
     changeMenu(x) {
       this.currentInd = x.id;
       this.$store.state.currentIndex = x.id;
+      let href = this.$route.path
+      let hrefUrl =  href.split('/')[2]
+      if(x.id!='/'+hrefUrl){
+        localStorage.removeItem('orderInfo_jd');
+        this.$store.state.orderInfo = '';
+      }
       this.$router.push({
         //核心语句
         path: x.path, //跳转的路径

@@ -13,7 +13,8 @@ export default new Vuex.Store({
       userId:'',
       userInfo:'',
       expCompany:[],
-      noticeAudio:false
+      noticeAudio:false,
+      orderInfo:''
     },
 
     //操作数据，唯一的通道是mutations/*配置全局函数*/
@@ -30,6 +31,11 @@ export default new Vuex.Store({
         state.userId = userId 
         localStorage.setItem('userId',userId) //同步存储token至localStorage
       },
+      setOrderInfo(state, info){ 
+          console.log(info,111);
+        state.orderInfo = info
+        localStorage.setItem('orderInfo_jd',JSON.stringify(info))
+      },
     },
     getters : {
       //获取token方法
@@ -40,6 +46,15 @@ export default new Vuex.Store({
           state.token = token?token:''
         }
         return state.token
+      },
+      getOrderInfo(state){ 
+        console.log(state+'51')
+        if (!state.orderInfo) {
+          let info = JSON.parse(localStorage.getItem('orderInfo_jd'))
+          console.log(info)
+          state.orderInfo = info?info:''
+        }
+        return state.orderInfo
       },
     },
 

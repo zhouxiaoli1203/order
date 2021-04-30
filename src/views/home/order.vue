@@ -61,7 +61,7 @@
                 <p>发货：{{x.deliveryTime}}</p>
             </div>
             <div class="footer">
-                <span class="fl status" :class='{"blue":x.orderAttr.goodsName=="打印","red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
+                <span class="fl status" :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
                 <span class="fr icon"><img src="@/assets/img/jiantou.png" alt=""></span>
             </div>
             </li>
@@ -127,7 +127,22 @@ export default {
   },
   components: {},
   created() {
-    this.getList()
+        let xinxi = this.$store.getters.getOrderInfo
+    if (xinxi) {
+        this.isStatus = xinxi.isStatus;
+        this.isType = xinxi.isType;
+        this.isTime = xinxi.isTime;
+        this.isDate = xinxi.isDate;
+        this.searchValue = xinxi.searchValue;
+        this.current = xinxi.current;
+        this.dropVisiable = xinxi.dropVisiable;
+        this.timeDisabled = xinxi.timeDisabled;
+
+
+      this.getList(xinxi)
+    } else {
+      this.getList()
+    }
   },
   mounted() {},
   methods: {
@@ -140,6 +155,11 @@ export default {
                 this.timeDisabled = false; 
             }
         }
+        let {current,isStatus,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled} = this;
+        current = 1;
+        this.current = 1;
+      // 当currentPage发生变化后需重新查询列表
+      this.$store.commit('setOrderInfo',{current,isStatus,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled,timeDisabled})
         this.getList();
       },
       changeDate(){
@@ -149,15 +169,16 @@ export default {
           }else{
               this.dropVisiable = true;
           }
+          this.current = 1;
           this.getList();
       },
       searchData(){
           this.getList();
       },
-      getList() {
-          let this_ = this;
+      getList(p_) {
+          let this_ = p_?p_:this;
           let params={
-              pageNum:this_.current,
+              pageNum:this_.current || 1,
               pageSize:10,
               skuId:this_.isType,
               status: this_.isStatus,
@@ -166,9 +187,9 @@ export default {
           if(this_.dropVisiable && this_.isTime){
               params["timeType"] = this_.isTime;
           }
-          if(this_.isDate && this_.formatDateYMDhms(this_.isDate[0]) && this_.formatDateYMDhms(this_.isDate[1])){
-            params["startDate"] = this_.formatDateYMDhms(this_.isDate[0]);
-            params["endDate"] = this_.formatDateYMDhms(this_.isDate[1]);
+          if(this_.isDate && this.formatDateYMDhms(this_.isDate[0]) && this.formatDateYMDhms(this_.isDate[1])){
+            params["startDate"] = this.formatDateYMDhms(this_.isDate[0]);
+            params["endDate"] = this.formatDateYMDhms(this_.isDate[1]);
           }
           for(let i in params){
               if(params[i] == "" || params[i] == undefined){
@@ -176,14 +197,11 @@ export default {
               }
           }
           console.log(params);
-        this_.$post('post','/order/page',params).then((res) => {
+        this.$post('post','/order/page',params).then((res) => {
             if (res.code == 200) {
-                this_.orderList = res.data.rows;
-            // this_.orderList = res.data.rows.filter((item)=>{
-            //     return item.status != 0;
-            // });
-            this_.current = res.data.num;
-            this_.total = res.data.total;
+                this.orderList = res.data.rows;
+            // this_.current = res.data.num;
+                this.total = res.data.total;
             }
         })
     },
@@ -195,7 +213,9 @@ export default {
     // currentPage 改变时会触发
     handleCurrentChange (val) {
       this.current = val
+      let {current,isStatus,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled} = this;
       // 当currentPage发生变化后需重新查询列表
+      this.$store.commit('setOrderInfo',{current,isStatus,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled,timeDisabled})
       this.getList()
     },
     openExport(){
@@ -208,6 +228,8 @@ export default {
         });
     },
     goDetail(x){
+         let {current,isStatus,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled} = this;
+      this.$store.commit('setOrderInfo',{current,isStatus,isType,isTime,isDate,dropVisiable,searchValue,timeDisabled})
          this.$router.push({
         //核心语句
         path: '/index/order/detail', //跳转的路径

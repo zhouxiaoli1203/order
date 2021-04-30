@@ -1,7 +1,8 @@
 const constant = {
     orderType:[
-        {name:"打印资料",value:"1"},
+        // {name:"打印资料",value:"1"},
         {name:"红色条幅",value:"2"},
+        {name:"通用下单",value:"7"},
     ],
     orderStatus:[
         {name:"近3天",value:"1"},

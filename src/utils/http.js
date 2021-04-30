@@ -26,7 +26,7 @@ let isApp, isWechat, yhcmessage;
 // };
 // 环境的切换
 if (process.env.NODE_ENV == 'development') {
-    axios.defaults.baseURL = 'http://ga.timan.vip:8090/cms';
+    axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
     // isApp = /app.html/.test(url)
     // isWechat = /weChat.html/.test(url)
 } else if (process.env.NODE_ENV == 'debug') {
@@ -69,7 +69,6 @@ axios.interceptors.request.use(
 // // 响应拦截器
 axios.interceptors.response.use(
     response => {
-        debugger
         if (response.data.code == 200) {
             token_invalid = false;
             return Promise.resolve(response);
@@ -132,4 +131,4 @@ export function yhcReq(methods, url, params,yhc_f_a) {/*  */
         })
     });
 }
-export const loadURL=process.env.NODE_ENV == 'development'?"http://ga.timan.vip:8090":process.env.NODE_ENV == 'production'?'http://wutuapi.gundongyongheng.com':'http://ga.timan.vip:8090';
+export const loadURL=process.env.NODE_ENV == 'development'?"http://wutuapi.gundongyongheng.com":process.env.NODE_ENV == 'production'?'http://wutuapi.gundongyongheng.com':'http://ga.timan.vip:8090';

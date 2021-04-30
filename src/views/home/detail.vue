@@ -72,9 +72,16 @@
             <span class="form-span-click">查看</span>
             <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
           </div>
+
+        </div>
+        <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label">产品数量</label>
             <span class="form-span">{{y.num}}</span>
+          </div>
+          <div class="form-item mr34" v-if="y.skuId != 7 && y.attributes">
+            <label for="form-label">颜色</label>
+            <span class="form-span">{{y.attributes.fontColor}}</span>
           </div>
 
         </div>
