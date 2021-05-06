@@ -1,19 +1,18 @@
 <template>
   <div class='detail-page'
        v-if="details">
-    <div class="page-title"><span class="gray-font cursor_p" @click="pathIndex">{{fromParam.from=="order"?"订单管理":"生产大厅"}} / </span>{{details.orderAttr.title}}</div>
+    <div class="page-title"><span class="gray-font cursor_p" @click="pathIndex"><i class="el-icon-back"></i>{{fromParam.from=="order"?"订单管理":"生产大厅"}}</span></div>
     <div class="detail-form order-info">
       <div class="form-head">订单信息</div>
       <div class="form-content">
         <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label">订单标题</label>
-            <span class="form-span">{{details.orderAttr.title}}</span>
+            <input type="text" class="form-span" readonly v-model="details.orderAttr.title">
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单编号</label>
             <input type="text" class="form-span" readonly v-model="details.orderCode">
-    </el-tooltip>
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单状态</label>
@@ -124,7 +123,7 @@
           <div class="form-item mr34"
                v-if="details.orderAttr.deliveryType != 3">
             <label for="form-label">快递公司</label>
-            <span class="form-span">{{details.orderAttr.waybillCode | yhc_wayBill($store.state.expCompany)}}</span>
+             <span class="form-span">{{details.orderAttr.waybillCode | yhc_wayBill($store.state.expCompany)}}</span>
           </div>
         </div>
       </div>
@@ -516,6 +515,14 @@ export default {
 .page-title {
   font-size: 14px;
   margin: 0 0 24px 0;
+  .gray-font{
+      line-height: 24px;
+  }
+  .el-icon-back{
+    font-size: 24px;
+    margin-right: 10px;
+    vertical-align: top;
+  }
 }
 /deep/.fahuoPop {
   .el-form-item__content {

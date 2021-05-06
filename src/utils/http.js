@@ -78,7 +78,7 @@ axios.interceptors.response.use(
             if (response.data.code == '401') {
                 if (!token_invalid) {
                     localStorage.removeItem('wutu_token');
-                //    window.location.href="/login"
+                   window.location.href="/login"
                 }
                 token_invalid = true;
             }

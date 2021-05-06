@@ -63,9 +63,19 @@
 .btn-green{
     background: #4E9F5B;
 }
+.btn-gray{
+    background: #D3D3D3;
+}
+
 .icon_warning{
     display: inline-block;
     width: 16px;
     height: 16px;
     background: url("../img/warning.png") no-repeat center center;
+}
+.part-line{
+    width: 100%;
+    border: none;
+    border-top: 1px solid #F0F0F0;
+    margin: 16px 0;
 }

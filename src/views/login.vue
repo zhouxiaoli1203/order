@@ -10,7 +10,7 @@
               <el-form-item class="yhc-item">
                 <el-input v-model="form.pwd" placeholder="密码" show-password ></el-input>
               </el-form-item>
-              <el-button  type="primary" class="width100" @click="submit">登录</el-button>
+              <el-button  type="primary" class="width100" style="margin-top:73px;" @click="submit">登录</el-button>
           </el-form>
       </div>
   </div>
@@ -30,7 +30,7 @@ export default {
   },
   components: {},
   created(){
-      localStorage.removeItem("wutu_token");
+    //   localStorage.removeItem("wutu_token");
   },
   mounted(){},
   methods: {
@@ -42,6 +42,9 @@ export default {
                "password": this.form.pwd,
                 "username": this.form.account,
           }
+        //   if(localStorage.getItem("wutu_token")){
+            localStorage.removeItem("wutu_token");
+        //   }
           axios.post("/login",data).then((res)=>{
              if(res.data.code == 200){
                   localStorage.setItem("wutu_token", res.data.token);

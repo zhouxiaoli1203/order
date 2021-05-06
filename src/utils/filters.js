@@ -59,7 +59,7 @@ const filters = {
     },
     yhc_source(n){
         let str = "";
-        constant.deliveryType.map((item,i)=>{
+        constant.source.map((item,i)=>{
             if(n == item.value){
                 str = item.name;
             }

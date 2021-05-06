@@ -70,19 +70,22 @@
           <li class="list-card"
               v-for="x in orderList"
               @click="goDetail(x)">
-            <div class="head">
-              <h3>{{x.orderAttr.title}}</h3>
-              <span class="yixiadan">{{x.status==0?"待生产":"已驳回"}}</span>
+              <div class="list-card-head">
+                <span class="font-style">创建：{{x.createTime}}</span>
+                <span class="status-font btn-blue_">{{x.status=='0'?"待生产":""}}</span>
             </div>
-            <div class="content">
-              <p>创建：{{x.createTime}}</p>
-              <p>发货：{{x.deliveryTime}}</p>
+            
+            <div class="part-line"></div>
+            <div class="list-card-title">
+                <h3 :title="x.orderAttr.title">{{x.orderAttr.title}}</h3>
             </div>
+            <!-- <div class="content">
+                <p><img src="@/assets/img/fahuo.png" alt="" style="margin-right:8px;"><span style="color:#3551DF;">{{x.deliveryTime}}</span></p>
+            </div> -->
             <div class="footer">
-              <span class="fl status"
-                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
-              <span class="fr icon"><img src="@/assets/img/jiantou.png"
-                     alt=""></span>
+                <span class="fl status" :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
+                <span class="fl rules">2.0*3.0</span>
+                <span class="fl rules">白色</span>
             </div>
           </li>
         </ul>
@@ -356,26 +359,45 @@ export default {
   justify-content: flex-start;
   flex-wrap: wrap;
   .list-card {
-    width: 274px;
-    height: 149px;
+    width: 360px;
+    // height: 210px;
     background: #ffffff;
     border-radius: 10px;
     padding: 16px 12px;
     box-shadow: 2px 3px 20px #ccc;
-    margin: 0 16px 20px 0;
+    margin:0 16px 20px 0;
     cursor: pointer;
-    .head {
-      display: flex;
-      justify-content: space-between;
-      h3 {
-        font-size: 16px;
+    .list-card-head{
+        display: flex;
+        justify-content: space-between;
+        .font-style{
+            font-size: 14px;
+            color:#333;
+        }
+    }
+    .list-card-title{
+        margin-bottom: 16px;
+        h3{
+            font-size: 16px;
         font-weight: 500;
         color: #333;
-        max-width: 192px;
-        white-space: nowrap;
+        white-space: normal;
+        width:100%;
+        height: 42px;
         overflow: hidden;
         text-overflow: ellipsis;
-      }
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        }
+    }
+    .status-font{
+        padding: 2px 8px;
+        border-radius: 4px;
+        color: #fff;
+        height: 24px;
+        line-height: 20px;
+        text-align: center;
     }
     .content {
       margin: 8px 0 24px;
@@ -387,9 +409,14 @@ export default {
     .footer {
       clear: both;
       overflow: hidden;
-      .icon img {
-        width: 25px;
-        height: 25px;
+      span.rules{
+        padding: 4px 8px;
+        line-height: 20px;
+        background-color: rgba(53,81,223,0.04);
+        color:#3551DF;
+        text-align: center;
+        border-radius: 4px;
+        margin-left: 16px;
       }
     }
   }
