@@ -71,7 +71,12 @@
             <span class="form-span-click">查看</span>
             <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
           </div>
-
+            <div class="form-item" v-if="y.attributes.crafts && JSON.stringify(y.attributes.crafts)!='{}'">
+            <label for="form-label">产品工艺{{index+1}}</label>
+            <span class="form-span">
+                <span class="overflowHd" >{{y.attributes.crafts | yhc_toObj}}</span>
+            </span>
+          </div>
         </div>
         <div class="form-line clearfix">
           <div class="form-item mr34">
@@ -82,7 +87,12 @@
             <label for="form-label">颜色</label>
             <span class="form-span">{{y.attributes.fontColor}}</span>
           </div>
-
+        <div class="form-item" v-if="y.attributes.paper">
+            <label for="form-label">材料选择{{index+1}}</label>
+            <span class="form-span">
+                {{y.attributes.paper}}
+            </span>
+          </div>
         </div>
         <div class="form-line clearfix">
           <div class="form-item width100">

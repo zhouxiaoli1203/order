@@ -83,6 +83,16 @@ const filters = {
             }
         });
         return str;
+    },
+    yhc_toObj(b){
+        let str = "";
+        for(let i in b){
+            str+=i;
+            if(b[i]){
+                str+=" : "+b[i];
+            }
+        }
+        return str;
     }
     
 }
