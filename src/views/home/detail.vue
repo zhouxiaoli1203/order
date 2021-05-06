@@ -59,14 +59,14 @@
          v-if="details.orderSkus">
       <div class="form-head">产品规格</div>
       <div class="form-content"
-           v-for="y in details.orderSkus">
+           v-for="(y,index) in details.orderSkus">
         <div class="form-line clearfix">
           <div class="form-item mr34">
-            <label for="form-label">产品尺寸1</label>
+            <label for="form-label">产品尺寸{{index+1}}</label>
             <span class="form-span">{{(y.attributes.width/1000)}}*{{(y.attributes.height/1000)}}m</span>
           </div>
           <div class="form-item mr34">
-            <label for="form-label">产品文件1</label>
+            <label for="form-label">产品文件</label>
             <input type="text" class="form-span" readonly v-model="y.attributes.productName" style="width:145px;">
             <span class="form-span-click">查看</span>
             <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
@@ -86,7 +86,7 @@
         </div>
         <div class="form-line clearfix">
           <div class="form-item width100">
-            <label for="form-label">产品描述1</label>
+            <label for="form-label">产品描述</label>
             <span class="form-textarea">{{y.remark}}</span>
           </div>
         </div>
