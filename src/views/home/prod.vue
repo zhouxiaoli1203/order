@@ -83,8 +83,8 @@
                 <p><img src="@/assets/img/fahuo.png" alt="" style="margin-right:8px;"><span style="color:#3551DF;">{{x.deliveryTime}}</span></p>
             </div> -->
             <div class="footer">
-              <span class="fl status"
-                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
+              <span class="fl status-card"
+                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅","yellow":x.orderAttr.goodsName=="旗帜"}'>{{x.orderAttr.goodsName}}</span>
               <span class="fl rules">{{(x.orderSkus[0].attributes.width/1000)}}*{{(x.orderSkus[0].attributes.height/1000)}}m</span>
               <span class="fl rules">{{x.orderSkus[0].attributes.fontColor}}</span>
               <span class="fr prods" v-if="x.orderSkus.length>1">

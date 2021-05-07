@@ -87,8 +87,8 @@
                      style="margin-right:8px;"><span style="color:#3551DF;">发货：{{x.deliveryTime}}</span></p>
             </div>
             <div class="footer">
-              <span class="fl status"
-                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅"}'>{{x.orderAttr.goodsName}}</span>
+              <span class="fl status-card"
+                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅","yellow":x.orderAttr.goodsName=="旗帜"}'>{{x.orderAttr.goodsName}}</span>
               <span class="fl rules">{{(x.orderSkus[0].attributes.width/1000)}}*{{(x.orderSkus[0].attributes.height/1000)}}m</span>
               <span class="fl rules">{{x.orderSkus[0].attributes.fontColor}}</span>
               <span class="fr prods" v-if="x.orderSkus.length>1">
@@ -449,20 +449,6 @@ export default {
     }
   }
 
-  .status {
-    width: 64px;
-    height: 25px;
-    line-height: 25px;
-    border-radius: 4px;
-    text-align: center;
-    &.blue {
-      color: #3a65ff;
-      background-color: rgba(58, 101, 255, 0.09);
-    }
-    &.red {
-      color: #ff3333;
-      background-color: rgba(255, 51, 51, 0.09);
-    }
-  }
+
 }
 </style>
