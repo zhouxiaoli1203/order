@@ -33,15 +33,15 @@
           </div>
         </div> -->
 
-        <!-- <div class="img cursor_p"
-             @click="msgVisible = true">
+         <div class="img cursor_p"
+             @click="nocticePorpclick">
           <img :src="headNoctice"
                alt="">
           <span class="mark" v-if="showNotice">40</span>
 
-        </div> -->
+        </div>
         <div class="info">
-          <p @click="passwordPorp = true">{{nickName}} &nbsp/</p>
+          <p @click="passwordPorpclick">{{nickName}} &nbsp/</p>
           <span class="cursor_p"
                 @click="signOut">&nbsp退出</span>
         </div>
@@ -88,23 +88,63 @@
         </el-form-item>
       </el-form>
     </section>
-    <div class="mask"
-         @click="LognClose"
-         v-show="passwordPorp"></div>
+    <div class="mask" @click="LognClose" v-show="publicPorp"></div>
 
-    <el-dialog class="yhc-dialog"
-               title="系统消息"
-               :visible.sync="msgVisible"
-               width="936px">
-      <div class="yhc-item">
-        <ul class="mes-ul">
-          <li v-for="x in 10">
-            <p class="date">2021-12-13</p>
-            <p class="info">您有一有退单信息，请立即查看</p>
-          </li>
-        </ul>
+     <!-- 通知信息 -->
+    <section class="publicPorp nocticePoro" v-show="nocticePorp" >
+      <div class="title">
+        <h3>系统消息</h3>
+        <i class="el-icon-close"  @click="LognClose">
+        </i>
       </div>
-    </el-dialog>
+      <div class="contentBox">
+        <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tab-pane
+            :key="item.name"
+            v-for="(item, index) in editableTabs"
+            :label="item.title"
+            :name="item.name"
+          >
+            <ul class="" v-if="Notifylist!=''">
+              <li v-for="item in Notifylist" @click="readNotify(item.id)">
+                <div class="state">
+                  <i class="weiDu" v-if="item.state == 0"></i>
+                  <span class="yiDu"  v-if="item.state == 1">已读</span>
+                </div>
+                <div class="cont">
+                  <span>{{item.createTime}}</span>
+                  <p>{{item.content}}</p>
+                </div>
+              </li>
+            </ul>
+            <div v-else class="noXiaoxi">
+              <img src="@/assets/img/xiaoxi.png" alt="">
+              <p>暂无任何系统消息</p>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+        <div class="pageblock" v-if="Notifylist!=''">
+          <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            layout="prev, pager, next"
+            :page-size="10"
+            :total="total">
+          </el-pagination>
+        </div>
+      </div>
+      
+    </section>
+
+
+    <audio
+      ref="audio"
+    >
+      <source type="audio/ogg"  :src="resData.questionAudio">
+    </audio>
+
+
+
   </div>
 </template>
 
@@ -130,6 +170,7 @@ export default {
           { required: true, message: '请输入新密码', trigger: 'blur' },
         ],
       },
+      publicPorp:false,
       passwordPorp: false,
       msgVisible: false,
       checkpop: false,
@@ -138,7 +179,33 @@ export default {
         { name: '生产大厅', id: '/prod', value: 'ting', path: '/index/prod' },
         { name: '订单管理', id: '/order', value: 'order', path: '/index/order' },
       ],
-     
+      nocticePorp:false,
+      editableTabs: [
+        {
+          title: '全部',
+          name: '2',
+        },
+        {
+          title: '仅未读',
+          name: '0',
+        }, 
+        {
+          title: '仅已读',
+          name: '1',
+        }
+      ],
+      activeName: '2',
+      Notifylist:[],
+      total:0,
+      pageNum:1,
+      state:2,
+      resData: {
+        questionAudio: 'https://api.gundongyongheng.com/clock.mp3', // 音频
+      },
+      totalChange: '',
+      timer: null,
+      weiDutotal:0,
+
     }
   },
   components: {},
@@ -148,22 +215,29 @@ export default {
      
     // let token = this.$store.state.token
     // localStorage.setItem('token', token)
+
+    this.tipsPageNotify();
+    this.weiDuPageNotify() //未读
+    
   },
   mounted() {
-     
+      this.timer = setInterval(() => {
+        this.tipsPageNotify();
+        this.weiDuPageNotify() //未读
+      }, 5000)
   },
   methods: {
       
-      getAccount(){
-        this.$post(
-            'get',
-           '/getInfo',
-          ).then((res) => {
-            if (res.code == 200) {
-              this.nickName = res.user.nickName;
-            }
-          })
-      },
+    getAccount(){
+      this.$post(
+          'get',
+          '/getInfo',
+        ).then((res) => {
+          if (res.code == 200) {
+            this.nickName = res.user.nickName;
+          }
+        })
+    },
     changeMenu(x) {
       this.currentInd = x.id;
       this.$store.state.currentIndex = x.id;
@@ -182,6 +256,11 @@ export default {
       }).catch(err => {
   // 重复点击相同的url
 })
+    },
+     // 点击修改密码
+    passwordPorpclick(){
+      this.publicPorp=true
+      this.passwordPorp=true
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -211,6 +290,13 @@ export default {
     // 关闭登录注册弹框
     LognClose() {
       this.passwordPorp = false
+      this.nocticePorp=false
+      this.publicPorp=false
+
+      this.activeName ='2'
+      this.pageNum = 1
+      this.state = 2
+
     },
     signOut() {
       localStorage.removeItem('wutu_token')
@@ -231,10 +317,95 @@ export default {
       this.currentInd = '/'+ hrefUrl
       this.$store.state.currentIndex = '/'+ hrefUrl
     },
+    nocticePorpclick(){
+      console.log(111);
+      this.publicPorp=true
+      this.nocticePorp=true
+      this.pageNotify(this.pageNum,this.state)
+    },
+
+    handleClick(e){
+      console.log(e.name);
+      this.state = e.name
+      this.activeName = e.name
+      this.pageNum = 1
+      this.pageNotify(1,e.name)
+    },
+    // 点击分页
+    handleCurrentChange(val){
+      this.pageNum = val
+      this.pageNotify(val,this.state)
+    },
+
+    // 获取通知消息列表
+    pageNotify(pageNum,state){
+      this.$post('post','/order/pageNotify',{
+        pageNum,
+        pageSize:10,
+        state
+      }).then((res) => {
+        if (res.code == 200) {
+          this.Notifylist = res.data.rows
+          this.total = res.data.total
+        }
+      })
+    },
+
+    // 提示音的总条数
+    tipsPageNotify(){
+      this.$post('post','/order/pageNotify',{
+        pageNum:1,
+        pageSize:10,
+        state:2
+      }).then((res) => {
+        if (res.code == 200) {
+          this.totalChange = res.data.total 
+        }
+      })
+    },
+
+    // 获取未读消息的总条数
+    weiDuPageNotify(){
+      this.$post('post','/order/pageNotify',{
+        pageNum:1,
+        pageSize:10,
+        state:0
+      }).then((res) => {
+        if (res.code == 200) {
+          this.weiDutotal = res.data.total 
+        }
+      })
+    },
+
+    // 标记已读
+    readNotify(id){
+      let arr = [id]
+      this.$post('post','/order/readNotify',{
+        ids:arr
+      }).then((res) => {
+        if (res.code == 200) {
+          this.pageNotify(this.pageNum,this.state)
+        }
+        
+      })
+
+    },
+
   },
   watch: {
     '$route': 'getPath',  //监听浏览器后退导航高亮问题
-  }
+    totalChange: {
+      handler: function (val, oldval) {
+        if (oldval !== '' && val != oldval) {
+            this.handlePlayAudio()
+        }
+      },
+    },
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
+    this.timer = null
+  },
 }
 </script>
 <style lang='less' scoped>
@@ -474,5 +645,103 @@ export default {
     }
   }
 }
+
+ // 通知消息
+  .nocticePoro{
+    background: #fff;
+    overflow: hidden;
+    width: 685px;
+    height: 72%;
+    .title{
+      padding: 0 24px;
+      height: 10%;
+      background: #F9F7F7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h3{
+        font-size: 16px;
+        color: #000;
+      }
+      i{
+        color: #999999;
+        font-size: 26px;
+        cursor: pointer;
+        display: inline-block;
+      }
+
+    }
+
+    .contentBox{
+      padding: 0 24px;
+      height: 90%;
+
+      .el-tabs{
+        height: 91%;
+      }
+      .el-tab-pane{
+        height: 100%;
+      }
+    }
+
+    ul{
+      overflow-y: scroll;
+      height: 100%;
+      li{
+        border-bottom: 1px solid #F2F3F8;
+        display: flex;
+        padding: 16px 0;
+        cursor: pointer;
+        .state{
+          width: 32px;
+        }
+        i{
+           display: inline-block;
+        }
+        .weiDu{
+          width: 8px;
+          height: 8px;
+          background: #FF3333;
+          border-radius: 50%;
+        }
+        .yiDu{
+          font-size: 12px;
+          color: #999;
+        }
+        .cont{
+          flex: 1;
+
+          span{
+            color: #999;
+          }
+          p{
+            font-size: 16px;
+            margin-top: 8px;
+          }
+        }
+      }
+    }
+  }
+  // 页码定位
+  .pageblock{
+    .el-pagination{
+      text-align: center;
+    }
+  }
+
+  .noXiaoxi{
+    text-align: center;
+        margin-top: 25%;
+    img{
+      width: 36px;
+      height: 36px;
+    }
+    p{
+      color: #3551DF;
+      font-size: 16px;
+      margin-top: 16px;
+    }
+  }
 
 </style>

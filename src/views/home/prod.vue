@@ -84,7 +84,7 @@
             </div> -->
             <div class="footer">
               <span class="fl status-card"
-                    :class='{"blue":(x.orderAttr.goodsName=="打印"||x.orderAttr.goodsName=="通用"),"red":x.orderAttr.goodsName=="条幅","yellow":x.orderAttr.goodsName=="旗帜"}'>{{x.orderAttr.goodsName}}</span>
+                      :class='{"blue":(x.orderAttr.skuName=="打印"||x.orderAttr.skuName=="通用下单"),"red":x.orderAttr.skuName=="红色条幅","caise":x.orderAttr.skuName=="彩色条幅","yellow":x.orderAttr.skuName=="旗帜"}'>{{x.orderAttr.skuName}}</span>
               <span class="fl rules">{{(x.orderSkus[0].attributes.width/1000)}}*{{(x.orderSkus[0].attributes.height/1000)}}m</span>
               <span class="fl rules">{{x.orderSkus[0].attributes.fontColor}}</span>
               <span class="fr prods" v-if="x.orderSkus.length>1">
@@ -190,14 +190,14 @@ export default {
     this.getChange()
   },
   mounted() {
-    this.timer = setInterval(() => {
-      this.getChange()
-    }, 5000)
+    // this.timer = setInterval(() => {
+    //   this.getChange()
+    // }, 5000)
   },
   methods: {
-    handlePlayAudio() {
-      this.$refs.audio.play() // 这里使用了audio的原生开始播放事件,同样不加on, 并使用ref获取dom
-    },
+    // handlePlayAudio() {
+    //   this.$refs.audio.play() // 这里使用了audio的原生开始播放事件,同样不加on, 并使用ref获取dom
+    // },
     audioEnd() {
       this.showNotice = false
     },
@@ -341,23 +341,23 @@ export default {
     },
   },
   watch: {
-    totalChange: {
-      handler: function (val, oldval) {
-        console.log(oldval)
-        if (oldval !== '' && val != oldval) {
-          this.showNotice = true
-        }
+    // totalChange: {
+    //   handler: function (val, oldval) {
+    //     console.log(oldval)
+    //     if (oldval !== '' && val != oldval) {
+    //       this.showNotice = true
+    //     }
 
-        // console.log('修改后',val,'修改前',oldval);
-      },
-    },
-    showNotice: {
-      handler: function (val, old) {
-        if (val) {
-          this.handlePlayAudio()
-        }
-      },
-    },
+    //     // console.log('修改后',val,'修改前',oldval);
+    //   },
+    // },
+    // showNotice: {
+    //   handler: function (val, old) {
+    //     if (val) {
+    //       this.handlePlayAudio()
+    //     }
+    //   },
+    // },
   },
   beforeDestroy() {
     clearInterval(this.timer)

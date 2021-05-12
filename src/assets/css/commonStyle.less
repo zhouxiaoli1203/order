@@ -253,6 +253,10 @@
         color: #FD58BA;
       background-color: rgba(253,88,186, 0.09);
     }
+    &.caise{
+        color: #fd58ba;
+        background: linear-gradient(136deg,rgba(247,255,145,.23921568627450981),rgba(253,88,186,.3215686274509804));
+    }
   }
 //修改滚动条的样式
 ::-webkit-scrollbar {
@@ -275,5 +279,15 @@
 
     &:hover {
         background-color: rgba(95, 95, 95, .7);
+    }
+}
+
+// 通知消息
+.nocticePoro{
+    .el-tabs__content{
+        height: 85%;
+    }
+    .el-tabs__nav-wrap::after{
+        display: none;
     }
 }

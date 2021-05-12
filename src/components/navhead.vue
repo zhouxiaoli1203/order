@@ -22,15 +22,12 @@
           </div>
         </div>
 
-        <div class="img cursor_p"
-             @click="msgVisible = true">
-          <img :src="headNoctice"
-               alt="">
+        <div class="img cursor_p">
+          <img :src="headNoctice" alt="">
           <span class="mark">40</span>
-
         </div>
         <div class="info">
-          <p @click="passwordPorp = true">奋斗的阿花 &nbsp/</p>
+          <p @click="passwordPorp = true">奋斗的阿花111 &nbsp/</p>
           <span class="cursor_p"
                 @click="signOut">&nbsp退出</span>
         </div>
@@ -99,7 +96,7 @@ export default {
   name: 'navhead',
   data () {
     return {
-            currentInd: "/prod",
+      currentInd: "/prod",
       headOrder: require('../assets/img/headOrder.png'),
       headNoctice: require('../assets/img/headNoctice.png'),
       ruleForm: {
