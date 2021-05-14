@@ -132,14 +132,14 @@
                    @click="exportVisible = false">确 定</el-button>
       </span>
     </el-dialog>
-    <audio class="notice-audio"
+    <!-- <audio class="notice-audio"
            controls="controls"
            ref="audio"
            style="display:none"
            @ended="audioEnd">
       <source type="audio/ogg"
               :src="resData.questionAudio">
-    </audio>
+    </audio> -->
   </div>
 </template>
 
@@ -149,7 +149,7 @@ export default {
   data() {
     return {
       timer: null,
-      showNotice: false,
+      // showNotice: false,
       isStatus: undefined,
       isType: undefined,
       isTime: undefined,
@@ -165,9 +165,9 @@ export default {
       exportDate: '',
       form: { desc: '' },
       noOrder: require('../../assets/img/noOrder.png'),
-      resData: {
-        questionAudio: 'https://api.gundongyongheng.com/clock.mp3', // 音频
-      },
+      // resData: {
+      //   questionAudio: 'https://api.gundongyongheng.com/clock.mp3', // 音频
+      // },
       oldParams: {},
     }
   },

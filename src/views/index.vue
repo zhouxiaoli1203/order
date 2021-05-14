@@ -33,12 +33,9 @@
           </div>
         </div> -->
 
-         <div class="img cursor_p"
-             @click="nocticePorpclick">
-          <img :src="headNoctice"
-               alt="">
-          <span class="mark" v-if="showNotice">40</span>
-
+         <div class="img cursor_p" @click="nocticePorpclick">
+          <img :src="headNoctice" alt="">
+          <span class="mark" v-if="weiDutotal!=0">{{weiDutotal}}</span>
         </div>
         <div class="info">
           <p @click="passwordPorpclick">{{nickName}} &nbsp/</p>
@@ -136,10 +133,7 @@
       
     </section>
 
-
-    <audio
-      ref="audio"
-    >
+    <audio ref="audio" >
       <source type="audio/ogg"  :src="resData.questionAudio">
     </audio>
 
@@ -153,8 +147,7 @@ export default {
   name: '',
   data() {
     return {
-        showNotice:false,
-        nickName:"",
+      nickName:"",
       currentInd: "/prod",
       headOrder: require('../assets/img/headOrder.png'),
       headNoctice: require('../assets/img/headNoctice.png'),
@@ -218,16 +211,20 @@ export default {
 
     this.tipsPageNotify();
     this.weiDuPageNotify() //未读
+    this.newOrderNotice(); //获取新订单通知
     
   },
   mounted() {
       this.timer = setInterval(() => {
         this.tipsPageNotify();
         this.weiDuPageNotify() //未读
+        this.newOrderNotice(); //获取新订单通知
       }, 5000)
   },
   methods: {
-      
+    handlePlayAudio() {
+	    this.$refs.audio.play() // 这里使用了audio的原生开始播放事件,同样不加on, 并使用ref获取dom
+	  },
     getAccount(){
       this.$post(
           'get',
@@ -385,10 +382,23 @@ export default {
       }).then((res) => {
         if (res.code == 200) {
           this.pageNotify(this.pageNum,this.state)
+          this.weiDuPageNotify()
         }
         
       })
+    },
 
+    // 获取未读消息的总条数
+    newOrderNotice(){
+      this.$post('get','/operating/newOrderNotice').then((res) => {
+        if (res.code == 200) {
+          console.log(res.data.length);
+          if(res.data.length!=0){
+            console.log(111);
+            this.handlePlayAudio()
+          }
+        }
+      })
     },
 
   },

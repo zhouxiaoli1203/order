@@ -68,7 +68,7 @@
           <div class="form-item mr34">
             <label for="form-label">产品文件</label>
             <input type="text" class="form-span" readonly v-model="y.attributes.productName" style="width:145px;">
-            <span class="form-span-click">查看</span>
+            <span class="form-span-click" @click="lookBigImg(y.attributes.productImg)">查看</span>
             <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
           </div>
             <div class="form-item" v-if="y.attributes.crafts && JSON.stringify(y.attributes.crafts)!='{}'">
@@ -240,15 +240,27 @@
             </ul>
         </div>
     </Dialog>
+
+
+    <!-- 查看大图 -->
+    <el-image-viewer 
+      v-if="showViewer" 
+      :on-close="closeViewer" 
+      :url-list="[showViewerUrl]" />
+
   </div>
 </template>
 
 <script>
+// 导入组件
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 import Dialog from '@/components/dialog-pop'
 export default {
   name: '',
+  components: { ElImageViewer, Dialog },
   data() {
     return {
+      showViewer:false,// 显示查看器
       details: '',
       form: { desc: '', wuliu: 'STO', danhao: '' },
       expCompany: [],
@@ -275,9 +287,9 @@ export default {
       },
       fileList:[],
       fromParam: {},
+      showViewerUrl:'',
     }
   },
-  components: { Dialog },
   created() {
     let this_ = this
     this_.fromParam = this_.$route.query
@@ -515,6 +527,26 @@ export default {
       // 这里可以写重置表单的实现
       console.log(this.form)
     },
+
+    // 大图预览
+    lookBigImg(val){
+      if(val){
+        this.showViewer = true
+        this.showViewerUrl = this.loadURL + val 
+      }else{
+        this.$message({
+          message: '该文件暂不支持预览哦！',
+          type: 'warning'
+        });
+      }
+    },
+
+    // 关闭查看器
+    closeViewer() {
+      this.showViewer = false
+      this.showViewerUrl = ''
+    }
+
   },
 }
 </script>

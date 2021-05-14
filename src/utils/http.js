@@ -27,12 +27,14 @@ let isApp, isWechat, yhcmessage;
 // 环境的切换
 if (process.env.NODE_ENV == 'development') {
     axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
+    // axios.defaults.baseURL = 'http://ga.timan.vip:8090/cms';
     // isApp = /app.html/.test(url)
     // isWechat = /weChat.html/.test(url)
 } else if (process.env.NODE_ENV == 'debug') {
     axios.defaults.baseURL = '';
 } else if (process.env.NODE_ENV == 'production') {
     axios.defaults.baseURL = 'http://wutuapi.gundongyongheng.com/cms';
+    // axios.defaults.baseURL = 'http://ga.timan.vip:8090/cms';
 } else if (process.env.NODE_ENV == 'testing') {
     // isApp = /show_app/.test(url)
     // isWechat = /show_h5/.test(url)
