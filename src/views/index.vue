@@ -215,11 +215,11 @@ export default {
     
   },
   mounted() {
-      this.timer = setInterval(() => {
-        this.tipsPageNotify();
-        this.weiDuPageNotify() //未读
-        this.newOrderNotice(); //获取新订单通知
-      }, 5000)
+    //   this.timer = setInterval(() => {
+    //     this.tipsPageNotify();
+    //     this.weiDuPageNotify() //未读
+    //     this.newOrderNotice(); //获取新订单通知
+    //   }, 5000)
   },
   methods: {
     handlePlayAudio() {

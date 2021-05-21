@@ -1,29 +1,39 @@
 <template>
   <div class='detail-page'
        v-if="details">
-    <div class="page-title"><span class="gray-font cursor_p" @click="pathIndex"><i class="el-icon-back"></i>{{fromParam.from=="order"?"订单管理":"生产大厅"}}</span></div>
+    <div class="page-title"><span class="gray-font cursor_p"
+            @click="pathIndex"><i class="el-icon-back"></i>{{fromParam.from=="order"?"订单管理":"生产大厅"}}</span></div>
     <div class="detail-form order-info">
       <div class="form-head">订单信息</div>
       <div class="form-content">
         <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label">订单标题</label>
-            <input type="text" class="form-span" readonly v-model="details.orderAttr.title">
+            <input type="text"
+                   class="form-span"
+                   readonly
+                   v-model="details.orderAttr.title">
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单编号</label>
-            <input type="text" class="form-span" readonly v-model="details.orderCode">
+            <input type="text"
+                   class="form-span"
+                   readonly
+                   v-model="details.orderCode">
           </div>
           <div class="form-item mr34">
             <label for="form-label">订单状态</label>
             <span class="form-span">{{details.status | yhc_status}}
-              <el-tooltip v-if="details.status==1 && details.operationLogs.length>0" class="item yhc-tooltip"
+              <el-tooltip v-if="details.status==1 && details.operationLogs.length>0"
+                          class="item yhc-tooltip"
                           effect="dark"
                           :content="details.operationLogs[0].remark"
                           placement="top-start">
                 <i class="icon_warning fr"></i>
               </el-tooltip>
-              <span class="item fr cursor_p" v-if="details.status==8" @click="openFanchang"><i class="icon_warning fr"></i></span>
+              <span class="item fr cursor_p"
+                    v-if="details.status==8"
+                    @click="openFanchang"><i class="icon_warning fr"></i></span>
             </span>
 
           </div>
@@ -45,7 +55,7 @@
         </div>
         <div class="form-line clearfix">
           <div class="form-item mr34">
-            <label for="form-label">下单员</label>
+            <label for="form-label">昵称</label>
             <span class="form-span">{{details.customerNickName}}</span>
           </div>
           <div class="form-item mr34">
@@ -59,7 +69,7 @@
          v-if="details.orderSkus">
       <div class="form-head">产品规格</div>
       <div class="form-content"
-           v-for="(y,index) in details.orderSkus">
+           v-for="(y,index) in details.orderSkus" :class='{"borderBt":index != (details.orderSkus.length-1)}'>
         <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label">产品尺寸{{index+1}}</label>
@@ -67,36 +77,56 @@
           </div>
           <div class="form-item mr34">
             <label for="form-label">产品文件</label>
-            <input type="text" class="form-span" readonly v-model="y.attributes.productName" style="width:145px;">
-            <span class="form-span-click" @click="lookBigImg(y.attributes.productImg)">查看</span>
-            <span class="form-span-click" v-if="details.status == 2" @click="download(y)">下载</span>
+            <input type="text"
+                   class="form-span"
+                   readonly
+                   v-model="y.attributes.productName"
+                   style="width:145px;">
+            <span class="form-span-click"
+                  @click="lookBigImg(y.attributes.productImg)">查看</span>
+            <span class="form-span-click"
+                  v-if="details.status == 2"
+                  @click="download(y)">下载</span>
           </div>
-            <div class="form-item" v-if="y.attributes.crafts && JSON.stringify(y.attributes.crafts)!='{}'">
+          <div class="form-item" v-if="details.orderAttr.skuId != 4">
             <label for="form-label">产品工艺{{index+1}}</label>
             <span class="form-span">
-                <span class="overflowHd" >{{y.attributes.crafts | yhc_toObj}}</span>
+              <span class="overflowHd">{{y.attributes.crafts | yhc_toObj}}</span>
             </span>
+          </div>
+        </div>
+        <div class="form-line clearfix" v-if="details.orderAttr.skuId == 4" style="margin-bottom:0;">
+            <div class="form-item mr34" v-for="(i,key) in y.attributes.crafts" style="margin-bottom:20px;">
+                <label for="form-label">{{key}}{{index+1}}</label>
+                <span class="form-span" v-if="!(key == '材料颜色' || key == '封面颜色')">
+                    <span class="overflowHd">{{i}}</span>
+                </span>
+                <span class="form-span bg-trsp" v-if="key == '材料颜色' || key == '封面颜色'" >
+                    <span class="colorDiv" :style="{background:i}"></span>
+                </span>
           </div>
         </div>
         <div class="form-line clearfix">
           <div class="form-item mr34">
-            <label for="form-label">产品数量</label>
+            <label for="form-label">产品数量{{index+1}}</label>
             <span class="form-span">{{y.num}}</span>
           </div>
-          <div class="form-item mr34" v-if="y.skuId != 7 && y.attributes">
+          <div class="form-item mr34"
+               v-if="y.skuId != 7 && details.orderAttr.skuId != 4 && y.attributes">
             <label for="form-label">颜色</label>
             <span class="form-span">{{y.attributes.fontColor}}</span>
           </div>
-        <div class="form-item" v-if="y.attributes.paper">
+          <div class="form-item"
+               v-if="y.attributes.paper">
             <label for="form-label">材料选择{{index+1}}</label>
             <span class="form-span">
-                {{y.attributes.paper}}
+              {{y.attributes.paper}}
             </span>
           </div>
         </div>
         <div class="form-line clearfix">
           <div class="form-item width100">
-            <label for="form-label">产品描述</label>
+            <label for="form-label">产品描述{{index+1}}</label>
             <span class="form-textarea">{{y.remark}}</span>
           </div>
         </div>
@@ -133,13 +163,13 @@
           <div class="form-item mr34"
                v-if="details.orderAttr.deliveryType != 3">
             <label for="form-label">快递公司</label>
-             <span class="form-span">{{details.orderAttr.waybillCode | yhc_wayBill($store.state.expCompany)}}</span>
+            <span class="form-span">{{details.orderAttr.waybillCode | yhc_wayBill($store.state.expCompany)}}</span>
           </div>
         </div>
       </div>
     </div>
     <div class="detail-form order-info">
-      <div class="form-head">发货信息</div>
+      <div class="form-head">发货信息<span class="clickText fr" @click="openPop(4)">添加物流</span></div>
       <div class="form-content">
         <div class="form-line clearfix">
           <div class="form-item mr34">
@@ -213,9 +243,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="运单号"
-                      class="yhc-item fahuoPop">
+                      class="yhc-item fahuoPop displayFl"
+                      v-for="(x,index) in form.danhaos"
+                      :key="index">
+          <!-- <div v-for="(x,index) in form.danhaos" :key="index"> -->
           <el-input type="text"
-                    v-model="form.danhao"></el-input>
+                    v-model="x.danhao"
+                    style="width:250px;"></el-input>
+          <span class="el-icon-remove ml10"
+                v-if="index != 0"
+                style="font-size: 24px;"
+                @click="delItem(x,index)"></span>
+          <span class="el-icon-circle-plus ml10"
+                style="font-size: 24px;"
+                @click="addItem(x,index)"></span>
+          <!-- </div> -->
+
         </el-form-item>
       </el-form>
     </Dialog>
@@ -225,28 +268,30 @@
             :beforeClose="beforeClose"
             modal-append-to-body="false"
             @close="resetForm">
-      <div class="yhc-item" v-if="details.orderBack">
-            <div class="el-textarea__inner">{{details.orderBack.description}}</div>
+      <div class="yhc-item"
+           v-if="details.orderBack">
+        <div class="el-textarea__inner">{{details.orderBack.description}}</div>
       </div>
-      <div class="shangchuan" v-if="fileList.length>0">
-            <ul>
-                <li v-for="(item,index) in fileList" :key="index">
-                    <!-- <img :src="item.url" alt="" class="img"> -->
-                     <el-image  class="img" z-index="3000"
-                        :src="item" 
-                        :preview-src-list="fileList">
-                    </el-image>
-                </li>
-            </ul>
-        </div>
+      <div class="shangchuan"
+           v-if="fileList.length>0">
+        <ul>
+          <li v-for="(item,index) in fileList"
+              :key="index">
+            <!-- <img :src="item.url" alt="" class="img"> -->
+            <el-image class="img"
+                      z-index="3000"
+                      :src="item"
+                      :preview-src-list="fileList">
+            </el-image>
+          </li>
+        </ul>
+      </div>
     </Dialog>
 
-
     <!-- 查看大图 -->
-    <el-image-viewer 
-      v-if="showViewer" 
-      :on-close="closeViewer" 
-      :url-list="[showViewerUrl]" />
+    <el-image-viewer v-if="showViewer"
+                     :on-close="closeViewer"
+                     :url-list="[showViewerUrl]" />
 
   </div>
 </template>
@@ -260,9 +305,9 @@ export default {
   components: { ElImageViewer, Dialog },
   data() {
     return {
-      showViewer:false,// 显示查看器
+      showViewer: false, // 显示查看器
       details: '',
-      form: { desc: '', wuliu: 'STO', danhao: '' },
+      form: { desc: '', wuliu: 'STO', danhaos: [{ danhao: '' }] },
       expCompany: [],
       bohuiconfig: {
         // top: '20vh',
@@ -285,9 +330,9 @@ export default {
         center: false,
         btnTxt: ['取消'],
       },
-      fileList:[],
+      fileList: [],
       fromParam: {},
-      showViewerUrl:'',
+      showViewerUrl: '',
     }
   },
   created() {
@@ -298,14 +343,14 @@ export default {
   },
   mounted() {},
   methods: {
-      // 跳转
-    pathIndex(){
+    // 跳转
+    pathIndex() {
       this.$router.go(-1)
     },
     getOrderInfo() {
       let this_ = this
       this_
-        .$post('post','/order/getById', {
+        .$post('post', '/order/getById', {
           orderId: this_.$route.query.id,
         })
         .then((res) => {
@@ -319,7 +364,7 @@ export default {
       this.confirm_pop('确定认领该条订单', '认领')
         .then(() => {
           this_
-            .$post('post','/operating/receiveOrder', {
+            .$post('post', '/operating/receiveOrder', {
               orderId: this_.$route.query.id,
             })
             .then((res) => {
@@ -340,7 +385,7 @@ export default {
             return this_.$message.error('请输入驳回理由')
           }
           this_
-            .$post('post','/operating/turnDownOrder', {
+            .$post('post', '/operating/turnDownOrder', {
               orderId: this_.$route.query.id,
               remark: this_.form.desc,
             })
@@ -356,44 +401,42 @@ export default {
           console.log(this.form.dec)
         }) //这里就充分利用了open方法中返回的nextTick
     },
-    openFanchang(){
-        let this_ = this
+    openFanchang() {
+      let this_ = this
 
       this_.$refs.fanchang
-        .open((cancel) => {
-
-        })
+        .open((cancel) => {})
         .then(() => {
-             let d_ = this.details.orderBack;
-            let arr = [],arr_ = [];;
-            if(d_ && d_.pics != ""){
-                arr = d_.pics.split(",");
-                arr.map((item)=>{
-                    arr_.push(this.loadURL+item);
-                });
-            }
-            this.fileList = arr_;
-            
-            return;
-        }) 
+          let d_ = this.details.orderBack
+          let arr = [],
+            arr_ = []
+          if (d_ && d_.pics != '') {
+            arr = d_.pics.split(',')
+            arr.map((item) => {
+              arr_.push(this.loadURL + item)
+            })
+          }
+          this.fileList = arr_
+
+          return
+        })
     },
     openPop(n) {
       switch (n) {
         case 2: //开始生产
-        //   this.confirm_pop('该条订单是否开始生产', '开始生产')
-        //     .then(() => {
-              this.$post('post','/order/downloadProdFile', {
-                  orderId: this.$route.query.id,
-                })
-                .then((res) => {
-                    if(res.code == 200){
-                        this.getOrderInfo()
-                        console.log(this.loadURL);
-                        window.open(this.loadURL+ res.data);
-                    }
-                })
-            // })
-            // .catch(() => {})
+          //   this.confirm_pop('该条订单是否开始生产', '开始生产')
+          //     .then(() => {
+          this.$post('post', '/order/downloadProdFile', {
+            orderId: this.$route.query.id,
+          }).then((res) => {
+            if (res.code == 200) {
+              this.getOrderInfo()
+              console.log(this.loadURL)
+              window.open(this.loadURL + res.data)
+            }
+          })
+          // })
+          // .catch(() => {})
           break
         case 3: //完成生产
           this.confirm_pop('确定该订单已完成生产？', '完成生产')
@@ -419,25 +462,36 @@ export default {
           let this_ = this
           this_.$refs.fahuo
             .open((cancel) => {
-                if(!this_.form.danhao){
-                    return this.$message.error("请输入运单号");
+                let list = this_.form.danhaos;
+                let jud = false;
+                for(let i=0;i<list.length;i++){
+                    if(!list[i].danhao){
+                        jud = true;
+                        break;
+                    }
                 }
-              this_
-                .$post('post','/order/delivery', {
-                  orderId: this_.$route.query.id,
-                  companyCode: this_.form.wuliu,
-                  waybillCode: this_.form.danhao,
-                })
-                .then((res) => {
-                  if (res.code == 200) {
-                    this_.$message({
-                      type: 'success',
-                      message: '订单发货成功!',
+                if(jud){
+                    return this_.$message({
+                    type: 'error',
+                    message: '运单号不可为空!',
                     })
-                    this_.getOrderInfo()
-                    cancel()
-                  }
-                })
+                }
+                  this_
+                    .$post('post', '/order/delivery', {
+                      orderId: this_.$route.query.id,
+                      companyCode: this_.form.wuliu,
+                      waybillCode: this_.form.danhaos,
+                    })
+                    .then((res) => {
+                      if (res.code == 200) {
+                        this_.$message({
+                          type: 'success',
+                          message: '订单发货成功!',
+                        })
+                        this_.getOrderInfo()
+                        cancel()
+                      }
+                    })
             })
             .then(() => {
               console.log(this.$refs.span)
@@ -448,7 +502,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post','/order/viaCancel', {
+                .$post('post', '/order/viaCancel', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -468,7 +522,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post','/order/viaBack', {
+                .$post('post', '/order/viaBack', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -488,7 +542,7 @@ export default {
             .then(() => {
               let this_ = this
               this_
-                .$post('post','/order/refuseBack', {
+                .$post('post', '/order/refuseBack', {
                   orderId: this_.$route.query.id,
                 })
                 .then((res) => {
@@ -505,22 +559,30 @@ export default {
           break
       }
     },
-    
-    download(x){
-        let this_ = this;
-              this_
-                .$post('post','/production/getDownloadUrl', {
-                  productCode: x.attributes.productCode,
-                })
-                .then((res) => {
-                  if (res.code == 200) {
-                    this_.$message({
-                      type: 'success',
-                      message: '文件下载成功!',
-                    })
-                    window.open(this.loadURL+ res.data);
-                  }
-                })
+    addItem(x, ind) {
+      if (this.form.danhaos.length > 1) {
+        return this.$message.error('最多添加两条')
+      }
+      this.form.danhaos.push({ danhao: '' })
+    },
+    delItem(x, ind) {
+      this.form.danhaos.splice(ind, 1)
+    },
+    download(x) {
+      let this_ = this
+      this_
+        .$post('post', '/production/getDownloadUrl', {
+          productCode: x.attributes.productCode,
+        })
+        .then((res) => {
+          if (res.code == 200) {
+            this_.$message({
+              type: 'success',
+              message: '文件下载成功!',
+            })
+            window.open(this.loadURL + res.data)
+          }
+        })
     },
     beforeClose() {},
     resetForm() {
@@ -529,15 +591,15 @@ export default {
     },
 
     // 大图预览
-    lookBigImg(val){
-      if(val){
+    lookBigImg(val) {
+      if (val) {
         this.showViewer = true
-        this.showViewerUrl = this.loadURL + val 
-      }else{
+        this.showViewerUrl = this.loadURL + val
+      } else {
         this.$message({
           message: '该文件暂不支持预览哦！',
-          type: 'warning'
-        });
+          type: 'warning',
+        })
       }
     },
 
@@ -545,8 +607,7 @@ export default {
     closeViewer() {
       this.showViewer = false
       this.showViewerUrl = ''
-    }
-
+    },
   },
 }
 </script>
@@ -557,10 +618,10 @@ export default {
 .page-title {
   font-size: 14px;
   margin: 0 0 24px 0;
-  .gray-font{
-      line-height: 24px;
+  .gray-font {
+    line-height: 24px;
   }
-  .el-icon-back{
+  .el-icon-back {
     font-size: 24px;
     margin-right: 10px;
     vertical-align: top;
@@ -569,26 +630,28 @@ export default {
 /deep/.fahuoPop {
   .el-form-item__content {
     width: 100%;
+    display: flex;
+    align-items: center;
   }
 }
 
- .shangchuan{
-                margin-top: 10px;
-                display: flex;
-                align-items: center;
-                ul{
-                    display: flex;
-                    align-items: center;
-                }
-                li{
-                    margin-right: 13px;
-                    position: relative;
-                    .img{
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 6px;
-                        cursor: pointer;
-                    }
-                }
-            }
+.shangchuan {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  ul {
+    display: flex;
+    align-items: center;
+  }
+  li {
+    margin-right: 13px;
+    position: relative;
+    .img {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  }
+}
 </style>

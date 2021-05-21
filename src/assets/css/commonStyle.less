@@ -125,6 +125,7 @@
         line-height: 40px;
         background-color: rgba(53,81,223,0.1);
         padding-left: 16px;
+        padding-right: 16px;
         color: #333;
         font-size: 16px;
         font-weight: 500;
@@ -132,9 +133,15 @@
     }
     .form-content{
        margin-top: 24px;
+       &.borderBt{
+        border-bottom:1px dashed #ccc;
+       }
        .form-line{
            width: 100%;
            margin-bottom: 20px;
+           display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
            .form-item{
                float: left;
                display: flex;
@@ -163,6 +170,15 @@
                    overflow: hidden;
                    text-overflow: ellipsis;
                    white-space: normal;
+               }
+               &.bg-trsp{
+                   background: transparent;
+                   padding: 0;
+               }
+               .colorDiv{
+                width: 35px;
+                height: 35px;
+                border-radius: 4px;
                }
            }
            .form-textarea{

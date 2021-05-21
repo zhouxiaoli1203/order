@@ -4,6 +4,9 @@
 .mr34{
     margin-right: 34px;
 }
+.ml10{
+    margin-left:10px;
+}
 .width100{
     width: 100%;
 }
@@ -14,6 +17,10 @@
     display: flex;
     
 }
+.clickText{
+    color:#3551DF;
+    cursor: pointer;
+}
 .btn{
     height: 34px;
     line-height: 20px;
@@ -22,10 +29,6 @@
     font-size: 14px;
     text-align: center;
     cursor: pointer;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    -o-border-radius: 4px;
 }
 .bgWhite{
     background: #FFFFFF;
