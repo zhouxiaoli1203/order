@@ -108,7 +108,7 @@
         </div>
         <div class="form-line clearfix">
           <div class="form-item mr34">
-            <label for="form-label">产品数量{{index+1}}</label>
+            <label for="form-label" style="color:red;font-weight: bold;">产品数量{{index+1}}</label>
             <span class="form-span">{{y.num}}</span>
           </div>
           <div class="form-item mr34"
