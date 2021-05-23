@@ -2,6 +2,9 @@ const constant = {
     orderType:[
         // {name:"打印资料",value:"1"},
         {name:"红色条幅",value:"2"},
+        {name:"彩色条幅",value:"5"},
+        {name:"打印",value:"4"},
+        {name:"旗帜",value:"6"},
         {name:"通用下单",value:"7"},
     ],
     orderStatus:[
