@@ -75,18 +75,18 @@
             <label for="form-label">产品尺寸{{index+1}}</label>
             <span class="form-span">{{(y.attributes.width/1000)}}*{{(y.attributes.height/1000)}}m</span>
           </div>
-          <div class="form-item mr34">
+          <div class="form-item mr34" v-for="y_ in y.products">
             <label for="form-label">产品文件</label>
             <input type="text"
                    class="form-span"
                    readonly
-                   v-model="y.attributes.productName"
+                   v-model="y_.name"
                    style="width:145px;">
             <span class="form-span-click"
-                  @click="lookBigImg(y.attributes.productImg)">查看</span>
+                  @click="lookBigImg(y_.img)">查看</span>
             <span class="form-span-click"
                   v-if="details.status == 2"
-                  @click="download(y)">下载</span>
+                  @click="download(y_)">下载</span>
           </div>
           <div class="form-item" v-if="details.orderAttr.skuId != 4">
             <label for="form-label">产品工艺{{index+1}}</label>
@@ -96,7 +96,7 @@
           </div>
         </div>
         <div class="form-line clearfix" v-if="details.orderAttr.skuId == 4" style="margin-bottom:0;">
-            <div class="form-item mr34" v-for="(i,key) in y.attributes.crafts" style="margin-bottom:20px;">
+            <div class="form-item mr34" v-for="(i,key) in y.attributes.crafts">
                 <label for="form-label">{{key}}{{index+1}}</label>
                 <span class="form-span" v-if="!(key == '材料颜色' || key == '封面颜色')">
                     <span class="overflowHd">{{i}}</span>
@@ -169,7 +169,7 @@
       </div>
     </div>
     <div class="detail-form order-info">
-      <div class="form-head">发货信息<span class="clickText fr" @click="openPop(4)">添加物流</span></div>
+      <div class="form-head">发货信息</div>
       <div class="form-content">
         <div class="form-line clearfix">
           <div class="form-item mr34">
@@ -243,20 +243,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="运单号"
-                      class="yhc-item fahuoPop displayFl"
-                      v-for="(x,index) in form.danhaos"
-                      :key="index">
+                      class="yhc-item fahuoPop displayFl">
           <!-- <div v-for="(x,index) in form.danhaos" :key="index"> -->
           <el-input type="text"
-                    v-model="x.danhao"
-                    style="width:250px;"></el-input>
-          <span class="el-icon-remove ml10"
+                    v-model="form.danhao"></el-input>
+          <!-- <span class="el-icon-remove ml10"
                 v-if="index != 0"
                 style="font-size: 24px;"
                 @click="delItem(x,index)"></span>
           <span class="el-icon-circle-plus ml10"
                 style="font-size: 24px;"
-                @click="addItem(x,index)"></span>
+                @click="addItem(x,index)"></span> -->
           <!-- </div> -->
 
         </el-form-item>
@@ -307,7 +304,7 @@ export default {
     return {
       showViewer: false, // 显示查看器
       details: '',
-      form: { desc: '', wuliu: 'STO', danhaos: [{ danhao: '' }] },
+      form: { desc: '', wuliu: 'STO', danhao: ''},
       expCompany: [],
       bohuiconfig: {
         // top: '20vh',
@@ -462,16 +459,22 @@ export default {
           let this_ = this
           this_.$refs.fahuo
             .open((cancel) => {
-                let list = this_.form.danhaos;
-                let jud = false;
-                for(let i=0;i<list.length;i++){
-                    if(!list[i].danhao){
-                        jud = true;
-                        break;
-                    }
-                }
-                if(jud){
-                    return this_.$message({
+                // let list = this_.form.danhaos;
+                // let jud = false;
+                // for(let i=0;i<list.length;i++){
+                //     if(!list[i].danhao){
+                //         jud = true;
+                //         break;
+                //     }
+                // }
+                // if(jud){
+                //     return this_.$message({
+                //     type: 'error',
+                //     message: '运单号不可为空!',
+                //     })
+                // }
+                if(!this_.form.danhao){
+                     return this_.$message({
                     type: 'error',
                     message: '运单号不可为空!',
                     })
@@ -480,7 +483,7 @@ export default {
                     .$post('post', '/order/delivery', {
                       orderId: this_.$route.query.id,
                       companyCode: this_.form.wuliu,
-                      waybillCode: this_.form.danhaos,
+                      waybillCode: this_.form.danhao,
                     })
                     .then((res) => {
                       if (res.code == 200) {
@@ -572,7 +575,7 @@ export default {
       let this_ = this
       this_
         .$post('post', '/production/getDownloadUrl', {
-          productCode: x.attributes.productCode,
+          productCode: x.code,
         })
         .then((res) => {
           if (res.code == 200) {

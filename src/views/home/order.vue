@@ -90,7 +90,7 @@
               <span class="fl status-card"
                     :class='{"blue":(x.orderAttr.skuName=="打印"||x.orderAttr.skuName=="通用下单"),"red":x.orderAttr.skuName=="红色条幅","caise":x.orderAttr.skuName=="彩色条幅","yellow":x.orderAttr.skuName=="旗帜"}'>{{x.orderAttr.skuName}}</span>
               <span class="fl rules">{{(x.orderSkus[0].attributes.width/1000)}}*{{(x.orderSkus[0].attributes.height/1000)}}m</span>
-              <span class="fl rules">{{x.orderSkus[0].attributes.fontColor}}</span>
+              <span class="fl rules" v-if="x.orderSkus[0].attributes.fontColor">{{x.orderSkus[0].attributes.fontColor}}</span>
               <span class="fr prods" v-if="x.orderSkus.length>1">
                 <i class="prods-mark">{{x.orderSkus.length}}</i>
               </span>
