@@ -109,7 +109,7 @@
         <div class="form-line clearfix">
           <div class="form-item mr34">
             <label for="form-label" style="color:red;font-weight: bold;">产品数量{{index+1}}</label>
-            <span class="form-span">{{y.num}}</span>
+            <span class="form-span" style="color:red;font-weight: bold;">{{y.num}}</span>
           </div>
           <div class="form-item mr34"
                v-if="y.skuId != 7 && details.orderAttr.skuId != 4 && y.attributes">
