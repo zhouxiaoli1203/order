@@ -47,5 +47,42 @@ const Fns={
               })
         })
     },
+    getColor(name){
+        var color = "";
+        switch (name){
+            case "打印":
+            case "通用下单":
+                color = "blue"
+                break;
+            case "红色条幅":
+                 color = "red"
+                break;
+            case "彩色条幅":
+                 color = "caise"
+                break;
+            case "旗帜":
+                 color = "yellow"
+                break;
+            case "喷绘":
+                color = "lineRed"
+                break;
+            case "户外精喷":
+                color = "hwjp"
+                break;
+            case "户内写真":
+                color = "xiezhen"
+                break;
+            case "户外写真":
+                color = "xiezhen"
+                break;
+            case "UV卷材写真":
+                color = "xiezhen"
+                break;
+            case "绶带":
+                color = "red"
+                break;
+        }
+        return color;
+    },
 }
 export default Fns

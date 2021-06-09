@@ -18,10 +18,10 @@
                    placeholder="订单类型"
                    clearable
                    @change="changeSearch(2)">
-          <el-option v-for="x in cost.orderType"
-                     :key="x.value"
+          <el-option v-for="x in orderType"
+                     :key="x.id"
                      :label="x.name"
-                     :value="x.value">
+                     :value="x.id">
           </el-option>
         </el-select>
         <el-select class="yhc-select"
@@ -84,7 +84,7 @@
             </div> -->
             <div class="footer">
               <span class="fl status-card"
-                      :class='{"blue":(x.orderAttr.skuName=="打印"||x.orderAttr.skuName=="通用下单"),"red":x.orderAttr.skuName=="红色条幅","caise":x.orderAttr.skuName=="彩色条幅","yellow":x.orderAttr.skuName=="旗帜"}'>{{x.orderAttr.goodsName=="条幅"?(x.orderAttr.goodsName+"-"):""}}{{x.orderAttr.skuName}}</span>
+              :class='getColor(x.orderAttr.skuName)'>{{x.orderAttr.goodsName=="条幅"?(x.orderAttr.goodsName+"-"):""}}{{x.orderAttr.skuName}}</span>
               <span class="fl rules" v-if="x.orderSkus[0].attributes.width">{{(x.orderSkus[0].attributes.width/1000)}}*{{(x.orderSkus[0].attributes.height/1000)}}m</span>
               <span class="fl rules" v-if="x.orderSkus[0].attributes.fontColor">{{x.orderSkus[0].attributes.fontColor}}</span>
               <span class="fr prods" v-if="x.orderSkus.length>1">
@@ -159,6 +159,7 @@ export default {
       total: 0,
       totalChange: '',
       orderList: [],
+      orderType:[],
       dropVisiable: true,
       timeDisabled: false,
       exportVisible: false,
@@ -187,7 +188,8 @@ export default {
     } else {
       this.getList()
     }
-    this.getChange()
+    this.getChange();
+    this.getGoodsAndSkus();
   },
   mounted() {
     // this.timer = setInterval(() => {
@@ -198,6 +200,20 @@ export default {
     // handlePlayAudio() {
     //   this.$refs.audio.play() // 这里使用了audio的原生开始播放事件,同样不加on, 并使用ref获取dom
     // },
+       getGoodsAndSkus(){
+        this.$post('get', '/goods/listGoodAndSkus').then((res) => {
+            if (res.code == 200) {
+                let arr = [];
+                let list = res.data;
+                list.map(v=>{
+                    if(v.skus){
+                        arr = [...arr,...v.skus];
+                    }
+                });
+                this.orderType = arr;
+            }
+        })
+      },
     audioEnd() {
       this.showNotice = false
     },

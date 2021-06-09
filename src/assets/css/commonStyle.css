@@ -245,6 +245,15 @@
   color: #FD58BA;
   background-color: rgba(253, 88, 186, 0.09);
 }
+.status-card.hwjp {
+  color: #29B1F3;
+  background-color: rgba(41, 177, 243, 0.09);
+}
+.status-card.xiezhen {
+  color: #FF6627;
+  background-color: rgba(255, 102, 39, 0.09);
+}
+
 .status-card.caise {
   color: #fd58ba;
   background: linear-gradient(136deg, rgba(247, 255, 145, 0.23921569), rgba(253, 88, 186, 0.32156863));
