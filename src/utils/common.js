@@ -79,7 +79,7 @@ const Fns={
                 color = "xiezhen"
                 break;
             case "绶带":
-                color = "red"
+                color = "xiezhen"
                 break;
         }
         return color;
