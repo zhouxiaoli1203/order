@@ -88,14 +88,14 @@
                   v-if="details.status == 2"
                   @click="download(y_)">下载</span>
           </div>
-          <div class="form-item" v-if="details.orderAttr.skuId == 2||details.orderAttr.skuId == 5||details.orderAttr.skuId == 6">
+          <!-- <div class="form-item" v-if="details.orderAttr.skuId == 2||details.orderAttr.skuId == 5||details.orderAttr.skuId == 6">
             <label for="form-label">产品工艺{{index+1}}</label>
             <span class="form-span">
               <span class="overflowHd">{{y.attributes.crafts | yhc_toObj}}</span>
             </span>
-          </div>
+          </div> -->
         </div>
-        <div class="form-line clearfix" v-if="!(details.orderAttr.skuId == 2||details.orderAttr.skuId == 4||details.orderAttr.skuId == 5||details.orderAttr.skuId == 6)" style="margin-bottom:0;">
+        <div class="form-line clearfix" v-if="details.orderAttr.skuId != 4" style="margin-bottom:0;">
             <div class="form-item mr34" v-for="(i,key) in y.attributes.crafts">
                 <label for="form-label" :class='{"redBold":key=="款数"}'>{{key}}{{index+1}}</label>
                 <span class="form-span" :class='{"redBold":key=="款数"}'>
